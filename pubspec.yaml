@@ -1,0 +1,6 @@
+name: Boxy
+version: 0.0.1
+author: Benjamin Petetot
+description: Boxy
+dependencies:
+  browser: any
