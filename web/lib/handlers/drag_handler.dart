@@ -1,16 +1,18 @@
 part of boxy;
 
-class Draggable {
+class DragHandler extends WidgetHandler {
 
   Widget _widget;
   bool _dragged = false;
   Point _lastMouse;
 
   String dragCursor = "move";
-
-  Draggable(this._widget);
   
-  void init(onDrag(Point curMouse, Point lastMouse)) {
+  DragHandler() : super("drag") {}
+  
+  void register(Widget widget, [onDrag(Point curMouse, Point lastMouse)]) {
+    _widget = widget;
+    
     // Set element draggable
    _widget.element.onMouseDown.listen((event) => beginDrag(event));
    _widget.element.onMouseMove.listen((event) => drag(event, onDrag));
@@ -34,7 +36,7 @@ class Draggable {
   void drag(MouseEvent e, dynamic onDrag) {
     if (_dragged) {
 
-      Point curMouse = _widget.element.ownerSvgElement.createSvgPoint();
+      Point curMouse = _widget.svg.createSvgPoint();
       curMouse.x = e.page.x;
       curMouse.y = e.page.y;
 

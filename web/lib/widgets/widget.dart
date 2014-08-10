@@ -4,12 +4,13 @@ abstract class Widget {
 
   final SvgElement group = new SvgElement.tag("g");
   final SvgElement toolsGroup = new SvgElement.tag("g");
-
+  
   SvgElement element;
 
-  Draggable _draggable;
-  Resizable _resizable;
-
+  // Handlers
+  ResizeHandler resizeHandler;
+  DragHandler dragHandler;
+  
   double get x;
 
   double get y;
@@ -27,7 +28,7 @@ abstract class Widget {
   void set height(double height);
 
   SvgSvgElement get svg => element.ownerSvgElement;
-
+  
   void attach(SvgElement parent) {
 
     group.append(element);
@@ -35,38 +36,17 @@ abstract class Widget {
     
     parent.append(group);
 
-    if (_draggable != null) {
-      _draggable.init((curMouse, lastMouse) => dragWidget(curMouse, lastMouse));
+    if (dragHandler != null) {
+      dragHandler.register(this, (curMouse, lastMouse) => dragWidget(curMouse, lastMouse));
     }
 
-    if (_resizable != null) {
-      _resizable.init();
+    if (resizeHandler != null) {
+      resizeHandler.register(this);
     }
     
   }
-
-  bool get resizable => _resizable != null;
-
-  void set resizable(bool isResizable) {
-    if (isResizable) {
-      // Set widget resizable
-      _resizable = new Resizable(this);
-    } else {
-      _resizable = null;
-    }
-  }
-
-  bool get draggable => _draggable != null;
-
-  void set draggable(bool isDraggable) {
-    if (isDraggable) {
-      // Set widget draggable
-      _draggable = new Draggable(this);
-    } else {
-      _draggable = null;
-    }
-  }
-
+  
+  
   void dragWidget(Point curMouse, Point lastMouse) {
 
     // Convert the global point into the space of the object you are dragging
@@ -79,8 +59,8 @@ abstract class Widget {
     x = x + pt.x;
     y = y + pt.y;
 
-    if (resizable) {
-      _resizable.updateAnchorPosition();
+    if (resizeHandler != null) {
+      resizeHandler.updateAnchorPosition();
     }
   }
 

@@ -6,8 +6,9 @@ class AnchorBoxy extends RectangleBoxy {
   
   AnchorBoxy(Widget parent, double size) : super(parent.x + parent.width, parent.y + parent.height, size, size)  {
     _parent = parent;
-    draggable = true;
-    resizable = false;
+    dragHandler = new DragHandler();
+    dragHandler.dragCursor = "nwse-resize";
+    
   }
   
   void dragWidget(Point curMouse, Point lastMouse) {
