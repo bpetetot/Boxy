@@ -13,7 +13,11 @@ void main() {
   CircleBoxy widget2 = new CircleBoxy(50.0, 50.0, 10.0);
   widget2.dragHandler = new DragHandler();
   widget2.resizeHandler = new ResizeHandler();
-  
   boxy.addWidget(widget2);
+  
+  EllipseBoxy widget3 = new EllipseBoxy(200.0, 200.0, 10.0, 30.0);
+  widget3.dragHandler = new DragHandler();
+  widget3.resizeHandler = new ResizeHandler();
+  boxy.addWidget(widget3);
 
 }

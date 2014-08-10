@@ -37,7 +37,7 @@ abstract class Widget {
     parent.append(group);
 
     if (dragHandler != null) {
-      dragHandler.register(this, (curMouse, lastMouse) => dragWidget(curMouse, lastMouse));
+      dragHandler.register(this, (e) => onDrag(e));
     }
 
     if (resizeHandler != null) {
@@ -47,18 +47,7 @@ abstract class Widget {
   }
   
   
-  void dragWidget(Point curMouse, Point lastMouse) {
-
-    // Convert the global point into the space of the object you are dragging
-    Point pt = svg.createSvgPoint();
-    pt.x = curMouse.x - lastMouse.x;
-    pt.y = curMouse.y - lastMouse.y;
-
-    pt = transformPointToElement(pt);
-
-    x = x + pt.x;
-    y = y + pt.y;
-
+  void onDrag(MouseEvent e) {
     if (resizeHandler != null) {
       resizeHandler.updateAnchorPosition();
     }
@@ -68,7 +57,6 @@ abstract class Widget {
     Matrix m = element.getTransformToElement(svg).inverse();
     m.e = 0;
     m.f = 0;
-
     return point.matrixTransform(m);
   }
 

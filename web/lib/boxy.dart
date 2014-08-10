@@ -14,3 +14,4 @@ part './widgets/widget.dart';
 part './widgets/anchor.dart';
 part './widgets/rectangle.dart';
 part './widgets/circle.dart';
+part './widgets/ellipse.dart';
