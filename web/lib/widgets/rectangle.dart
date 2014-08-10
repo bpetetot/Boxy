@@ -3,7 +3,7 @@ part of boxy;
 class RectangleBoxy extends Widget {
 
   RectangleBoxy(double x, double y, double width, double height) {
-    
+
     element = new SvgElement.tag("rect");
     element.attributes = {
       "x": "$x",
@@ -25,19 +25,13 @@ class RectangleBoxy extends Widget {
 
   double get height => double.parse(element.attributes["height"]);
 
-  void set x(double x) {
-    element.attributes["x"] = "$x";
-  }
+  set x(double x) => element.attributes["x"] = "$x";
 
-  void set y(double y) {
-    element.attributes["y"] = "$y";
-  }
+  set y(double y) => element.attributes["y"] = "$y";
 
-  void set width(double width) {
-    element.attributes["width"] = "$width";
-  }
+  set width(double width) => element.attributes["width"] = "$width";
 
-  void set height(double height) {
-    element.attributes["height"] = "$height";
-  }
+  set height(double height) => element.attributes["height"] = "$height";
+
+
 }

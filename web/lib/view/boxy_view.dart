@@ -13,8 +13,8 @@ class BoxyView {
   }
 
   void addWidget(Widget widget) {
-    // Create Widget
-    widget.createWidget(_SVG);
+    // attach the widget to the SVG view
+    widget.attach(_SVG);
   }
 
   void displayGrid() {

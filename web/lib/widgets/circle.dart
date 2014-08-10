@@ -15,7 +15,7 @@ class CircleBoxy extends Widget {
   }
 
   double get ray => double.parse(element.attributes["r"]);
-  
+
   double get x => double.parse(element.attributes["cx"]) - ray;
 
   double get y => double.parse(element.attributes["cy"]) - ray;
@@ -23,21 +23,15 @@ class CircleBoxy extends Widget {
   double get width => ray * 2;
 
   double get height => ray * 2;
+  
+  set ray(double ray) => element.attributes["r"] = "${ray}";
 
-  void set x(double x) {
-    element.attributes["cx"] = "${x + ray}";
-  }
+  set x(double x) => element.attributes["cx"] = "${x + ray}";
 
-  void set y(double y) {
-    element.attributes["cy"] = "${y + ray}";
-  }
+  set y(double y) => element.attributes["cy"] = "${y + ray}";
 
-  void set width(double width) {
-    element.attributes["r"] = "${width / 2}";
-  }
+  set width(double width) => ray = width / 2;
 
-  void set height(double height) {
-    element.attributes["r"] = "${height / 2}";
-  }
+  set height(double height) => ray = height / 2;
 
 }

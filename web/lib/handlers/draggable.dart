@@ -2,25 +2,26 @@ part of boxy;
 
 class Draggable {
 
-  SvgElement _element;
+  Widget _widget;
   bool _dragged = false;
   Point _lastMouse;
 
   String dragCursor = "move";
 
-  Draggable(this._element, onDrag(Point curMouse, Point lastMouse)) {
+  Draggable(this._widget);
+  
+  void init(onDrag(Point curMouse, Point lastMouse)) {
     // Set element draggable
-    _element.onMouseDown.listen((event) => beginDrag(event));
-    _element.onMouseMove.listen((event) => drag(event, onDrag));
-    _element.onMouseUp.listen((event) => endDrag(event));
-    _element.onMouseOver.listen((event) => showDragCursor());
-    _element.onMouseOut.listen((event) => showDragCursor());
-
-    SvgSvgElement svg = _element.ownerSvgElement;
-    svg.onMouseMove.listen((event) => drag(event, onDrag));
-    svg.onMouseUp.listen((event) => endDrag(event));
-
-    _lastMouse = svg.createSvgPoint();
+   _widget.element.onMouseDown.listen((event) => beginDrag(event));
+   _widget.element.onMouseMove.listen((event) => drag(event, onDrag));
+   _widget.element.onMouseUp.listen((event) => endDrag(event));
+   _widget.element.onMouseOver.listen((event) => showDragCursor());
+   _widget.element.onMouseOut.listen((event) => showDragCursor());
+  
+   _widget.svg.onMouseMove.listen((event) => drag(event, onDrag));
+   _widget.svg.onMouseUp.listen((event) => endDrag(event));
+  
+   _lastMouse = _widget.svg.createSvgPoint();
   }
 
   // ---- Draggable Methods
@@ -33,7 +34,7 @@ class Draggable {
   void drag(MouseEvent e, dynamic onDrag) {
     if (_dragged) {
 
-      Point curMouse = _element.ownerSvgElement.createSvgPoint();
+      Point curMouse = _widget.element.ownerSvgElement.createSvgPoint();
       curMouse.x = e.page.x;
       curMouse.y = e.page.y;
 
@@ -52,11 +53,11 @@ class Draggable {
   }
   
   void showDragCursor() {
-    _element.setAttribute("cursor", dragCursor);
+    _widget.element.setAttribute("cursor", dragCursor);
   }
   
   void hideDragCursor() {
-    _element.setAttribute("cursor", "pointer");
+    _widget.element.setAttribute("cursor", "pointer");
   }
 
 }

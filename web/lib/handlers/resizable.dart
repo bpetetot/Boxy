@@ -2,17 +2,34 @@ part of boxy;
 
 class Resizable {
 
-  Widget _widget;
-  SvgElement _group;
-  SvgElement _anchor;
+  final Widget _widget;
+  //SvgElement _group;
+  AnchorBoxy _anchor;
 
   static final double _SIZE = 10.0;
 
-  Resizable(this._widget, this._group) {
+  // Resizable(this._widget, this._group) {
+  Resizable(this._widget);
+  
+  void init() {
     // Set element resizable
-    _widget.element.onMouseDown.listen((event) => addAnchor(event));
+     _widget.element.onMouseDown.listen((event) => addAnchor(event));
+  }
+  
+  void addAnchor(MouseEvent e) {
+    if (_anchor == null) {
+      _anchor = new AnchorBoxy(_widget, _SIZE);
+      _anchor.attach(_widget.toolsGroup);
+    }
   }
 
+  void updateAnchorPosition() {   
+    if (_anchor != null) {
+      _anchor.updateAnchorPosition();
+    }
+  }
+  
+  /*
   void addAnchor(MouseEvent e) {
     if (_anchor == null) {
       _anchor = new SvgElement.tag("rect");
@@ -80,5 +97,6 @@ class Resizable {
       }
 
     }
+    */
 
 }
