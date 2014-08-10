@@ -2,59 +2,49 @@ part of boxy;
 
 class BoxyView {
 
-  final SvgSvgElement SVG = new SvgSvgElement();
+  final SvgSvgElement _SVG = new SvgSvgElement();
 
-  final int WIDTH = 800;
-  final int HEIGHT = 600;
-
-  BoxyView() {
-    SVG.attributes = {
-      'width': '${WIDTH}',
-      'height': '${HEIGHT}'
+  BoxyView(String viewId) {
+    _SVG.attributes = {
+      'width': '100%',
+      'height': '100%'
     };
+    querySelector(viewId).append(_SVG);
   }
 
-  void attach(String viewId) {
-    Element div = querySelector(viewId);
-    div.append(SVG);
-  }
-
-  void display(Shape shape) {
+  void addWidget(Widget widget) {
     // Create Widget
-    SvgElement widget = shape.createWidget(SVG);
-
-    // Add widget to the SVG view
-    SVG.append(widget);
+    widget.createWidget(_SVG);
   }
 
   void displayGrid() {
 
     int step = 20;
 
-    for (int i = 0; i < HEIGHT; i = i + step) {
+    for (int i = 0; i < _SVG.client.height; i = i + step) {
       SvgElement line = new SvgElement.tag("line");
       line.attributes = {
         "x1": "0",
         "y1": "${i}",
-        "x2": "${WIDTH}",
+        "x2": "${_SVG.client.width}",
         "y2": "${i}",
         "stroke": "grey",
         "stroke-width": "0.2"
       };
-      SVG.append(line);
+      _SVG.append(line);
     }
 
-    for (int i = 0; i < WIDTH; i = i + step) {
+    for (int i = 0; i < _SVG.client.width; i = i + step) {
       SvgElement line = new SvgElement.tag("line");
       line.attributes = {
         "x1": "${i}",
         "y1": "0",
         "x2": "${i}",
-        "y2": "${HEIGHT}",
+        "y2": "${_SVG.client.height}",
         "stroke": "grey",
         "stroke-width": "0.2"
       };
-      SVG.append(line);
+      _SVG.append(line);
     }
 
   }

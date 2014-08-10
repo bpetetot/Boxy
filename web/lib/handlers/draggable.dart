@@ -2,53 +2,61 @@ part of boxy;
 
 class Draggable {
 
-  SvgSvgElement parent;
-  SvgElement widget;
-  
+  SvgElement _element;
+  bool _dragged = false;
+  Point _lastMouse;
+
   String dragCursor = "move";
 
-  Draggable(this.widget, this.parent, onDrag(Point curMouse, Point lastMouse)) {
-    // Set widget draggable
-    widget.onMouseDown.listen((event) => beginDrag(event));
-    widget.onMouseMove.listen((event) => drag(event, onDrag));
-    widget.onMouseUp.listen((event) => endDrag(event));
-    parent.onMouseMove.listen((event) => drag(event, onDrag));
-    parent.onMouseUp.listen((event) => endDrag(event));
+  Draggable(this._element, onDrag(Point curMouse, Point lastMouse)) {
+    // Set element draggable
+    _element.onMouseDown.listen((event) => beginDrag(event));
+    _element.onMouseMove.listen((event) => drag(event, onDrag));
+    _element.onMouseUp.listen((event) => endDrag(event));
+    _element.onMouseOver.listen((event) => showDragCursor());
+    _element.onMouseOut.listen((event) => showDragCursor());
 
-    lastMouse = parent.createSvgPoint();
+    SvgSvgElement svg = _element.ownerSvgElement;
+    svg.onMouseMove.listen((event) => drag(event, onDrag));
+    svg.onMouseUp.listen((event) => endDrag(event));
+
+    _lastMouse = svg.createSvgPoint();
   }
 
   // ---- Draggable Methods
-  bool dragged = false;
-  Point lastMouse;
-
   void beginDrag(MouseEvent e) {
-    dragged = true;
-    lastMouse.x = e.page.x;
-    lastMouse.y = e.page.y;
-    
-    widget.setAttribute("cursor", dragCursor);
+    _dragged = true;
+    _lastMouse.x = e.page.x;
+    _lastMouse.y = e.page.y;
   }
 
   void drag(MouseEvent e, dynamic onDrag) {
-    if (dragged) {
+    if (_dragged) {
 
-      Point curMouse = parent.createSvgPoint();
+      Point curMouse = _element.ownerSvgElement.createSvgPoint();
       curMouse.x = e.page.x;
       curMouse.y = e.page.y;
 
       if (onDrag != null) {
-        onDrag(curMouse, lastMouse);
+        onDrag(curMouse, _lastMouse);
       }
 
-      lastMouse.x = e.page.x;
-      lastMouse.y = e.page.y;
-      
+      _lastMouse.x = e.page.x;
+      _lastMouse.y = e.page.y;
+
     }
   }
 
   void endDrag(Event e) {
-    dragged = false;
+    _dragged = false;
+  }
+  
+  void showDragCursor() {
+    _element.setAttribute("cursor", dragCursor);
+  }
+  
+  void hideDragCursor() {
+    _element.setAttribute("cursor", "pointer");
   }
 
 }

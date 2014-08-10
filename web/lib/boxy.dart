@@ -9,4 +9,6 @@ part './view/boxy_view.dart';
 part './handlers/draggable.dart';
 part './handlers/resizable.dart';
 
-part './shapes/shape.dart';
+part './widgets/widget.dart';
+part './widgets/rectangle.dart';
+part './widgets/circle.dart';

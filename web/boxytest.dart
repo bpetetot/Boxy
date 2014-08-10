@@ -4,11 +4,13 @@ import 'lib/boxy.dart';
 
 void main() {
 
-  Shape shape = new Shape(10.0,10.0, 50.0, 20.0);
+  RectangleBoxy widget = new RectangleBoxy(10.0,10.0, 50.0, 20.0);
 
-  BoxyView boxy = new BoxyView();
-  boxy.attach("#viewport");
+  BoxyView boxy = new BoxyView("#viewport");
   boxy.displayGrid();
-  boxy.display(shape);
+  boxy.addWidget(widget);
+  
+  CircleBoxy widget2 = new CircleBoxy(50.0,50.0, 10.0);
+  boxy.addWidget(widget2);
 
 }
