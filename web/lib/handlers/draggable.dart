@@ -4,50 +4,49 @@ class Draggable {
 
   SvgSvgElement parent;
   SvgElement widget;
+  
+  String dragCursor = "move";
 
-  Draggable(this.widget, this.parent, onDrag(double newX, double newY)) {
+  Draggable(this.widget, this.parent, onDrag(Point curMouse, Point lastMouse)) {
     // Set widget draggable
     widget.onMouseDown.listen((event) => beginDrag(event));
     widget.onMouseMove.listen((event) => drag(event, onDrag));
     widget.onMouseUp.listen((event) => endDrag(event));
     parent.onMouseMove.listen((event) => drag(event, onDrag));
     parent.onMouseUp.listen((event) => endDrag(event));
+
+    lastMouse = parent.createSvgPoint();
   }
 
   // ---- Draggable Methods
   bool dragged = false;
-  double lastTop;
-  double lastLeft;
+  Point lastMouse;
 
   void beginDrag(MouseEvent e) {
     dragged = true;
-    //lastLeft = e.page.x + 0.0;
-    //lastTop = e.page.y + 0.0;
+    lastMouse.x = e.page.x;
+    lastMouse.y = e.page.y;
+    
+    widget.setAttribute("cursor", dragCursor);
   }
 
   void drag(MouseEvent e, dynamic onDrag) {
     if (dragged) {
-      //double curX = double.parse(widget.getAttribute("x"));
-      //double curY = double.parse(widget.getAttribute("y"));
-      
-      //int newX = curX + e.page.x - lastLeft;
-      //int newY = curY + e.page.y - lastTop;
-      
-      double newX = e.page.x + 0.0;
-      double newY = e.page.y + 0.0;
+
+      Point curMouse = parent.createSvgPoint();
+      curMouse.x = e.page.x;
+      curMouse.y = e.page.y;
 
       if (onDrag != null) {
-        onDrag(newX, newY);
+        onDrag(curMouse, lastMouse);
       }
-      
-      //widget.attributes["x"] = "$newX";
-      //widget.attributes["y"] = "$newY";
 
-      //lastLeft = e.page.x;
-      //lastTop = e.page.y;
+      lastMouse.x = e.page.x;
+      lastMouse.y = e.page.y;
+      
     }
   }
-  
+
   void endDrag(Event e) {
     dragged = false;
   }

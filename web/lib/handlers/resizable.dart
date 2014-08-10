@@ -1,10 +1,12 @@
 part of boxy;
 
 class Resizable {
-  
+
   SvgSvgElement parent;
   SvgElement widgetGroup;
   SvgElement widget;
+
+  ResizeBox box;
 
   Resizable(this.widget, this.parent, this.widgetGroup) {
     // Set widget draggable
@@ -14,12 +16,19 @@ class Resizable {
   // ---- Resizable Methods
 
   void addResizeBox(MouseEvent e) {
-    // add box
-    ResizeBox box = new ResizeBox(widget, parent, widgetGroup);
+    if (box == null) {
+      box = new ResizeBox(widget, parent, widgetGroup);
+    }
   }
 
   void removeResizeBox(MouseEvent e) {
     // add box
+  }
+
+  void moveBoxToParent() {
+    if (box != null) {
+      box.updateAnchorPosition();
+    }
   }
 
 }
@@ -30,132 +39,90 @@ class ResizeBox {
   SvgElement resizedWidget;
   SvgElement widgetGroup;
 
-  SvgElement anchorsGroup;
+  SvgElement anchor;
 
-  final double SIZE = 5.0;
+  final double SIZE = 10.0;
 
   var anchors = {};
 
   ResizeBox(this.resizedWidget, this.parent, this.widgetGroup) {
-    
-    //http://stackoverflow.com/questions/4850821/svg-coordinates-with-transform-matrix
-    
-    createAnchor(AnchorPosition.TOP);
-    createAnchor(AnchorPosition.BOTTOM);
-    createAnchor(AnchorPosition.LEFT);
-    createAnchor(AnchorPosition.RIGHT);
-    createAnchor(AnchorPosition.TOP_LEFT);
-    createAnchor(AnchorPosition.TOP_RIGHT);
-    createAnchor(AnchorPosition.BOTTOM_LEFT);
-    createAnchor(AnchorPosition.BOTTOM_RIGHT);
+    createAnchor();
   }
 
-  createAnchor(AnchorPosition position) {
-
-    SvgElement anchorsGroup = new SvgElement.tag("g");
-
-    SvgElement anchor = new SvgElement.tag("rect");
+  createAnchor() {
+    anchor = new SvgElement.tag("rect");
     anchor.attributes = {
       "width": "$SIZE",
       "height": "$SIZE",
       "stroke": "red",
-      "fill": "transparent",
-      "stroke-width": "0.3"
+      "fill": "red",
+      "stroke-width": "0.5"
     };
 
-    anchors[position] = anchor;
+    updateAnchorPosition();
 
-    double widgetX = double.parse(resizedWidget.attributes["x"]);
-    double widgetY = double.parse(resizedWidget.attributes["y"]);
-    setAnchorPosition(position, widgetX, widgetY);
-    
-    Draggable draggable = new Draggable(anchor, parent, (newX, newY) => onDrag(newX, newY, anchor, position));
-    
-    anchorsGroup.append(anchor);
+    Draggable draggable = new Draggable(anchor, parent, (curMouse, lastMouse) => onDrag(curMouse, lastMouse));
+    draggable.dragCursor = "nwse-resize";
+
     widgetGroup.append(anchor);
 
   }
 
-  void onDrag(double x, double y, SvgElement anchor, AnchorPosition position) {
-    SvgElement anchor = anchors[position];
-    
+  void onDrag(Point curMouse, Point lastMouse) {
+
     double widgetX = double.parse(resizedWidget.attributes["x"]);
     double widgetY = double.parse(resizedWidget.attributes["y"]);
     double widgetW = double.parse(resizedWidget.attributes["width"]);
     double widgetH = double.parse(resizedWidget.attributes["height"]);
 
-    switch (position) {
+    // Drag the anchor
+    Point ptAnchor = parent.createSvgPoint();
+    ptAnchor.x = curMouse.x - lastMouse.x;
+    ptAnchor.y = curMouse.y - lastMouse.y;
 
-      case AnchorPosition.TOP:
-        anchor.attributes["x"] = "${widgetX + (widgetW / 2) - (SIZE/2)}";
-        anchor.attributes["y"] = "${y - (SIZE/2)}";
-        
-        resizedWidget.setAttribute("transform", "matrix");
-        resizedWidget.attributes["y"] = "${y + (SIZE/2)}"; 
-        break;
+    Matrix m = anchor.getTransformToElement(parent).inverse();
+    m.e = 0;
+    m.f = 0;
 
-    }
+    ptAnchor = ptAnchor.matrixTransform(m);
+
+    double newX = double.parse(anchor.attributes["x"]) + ptAnchor.x;
+    double newY = double.parse(anchor.attributes["y"]) + ptAnchor.y;
+
+    newX = max(newX, widgetX);
+    newY = max(newY, widgetY);
+
+    anchor.attributes["x"] = "${newX}";
+    anchor.attributes["y"] = "${newY}";
+
+    // Resize the widget
+    Point ptWidget = parent.createSvgPoint();
+    ptWidget.x = newX;
+    ptWidget.y = newY;
+
+    Matrix mWidget = resizedWidget.getTransformToElement(parent).inverse();
+    ptWidget = ptWidget.matrixTransform(mWidget);
+
+    double w = max(ptWidget.x - widgetX, 1.0);
+    double h = max(ptWidget.y - widgetY, 1.0);
+
+    resizedWidget.attributes["width"] = "$w";
+    resizedWidget.attributes["height"] = "$h";
+
+    // updateAnchorPosition();
+
   }
 
-  void setAnchorPosition(AnchorPosition position, double widgetX, double widgetY) {
+  void updateAnchorPosition() {
 
-    SvgElement anchor = anchors[position];
-
+    double widgetX = double.parse(resizedWidget.attributes["x"]);
+    double widgetY = double.parse(resizedWidget.attributes["y"]);
     double widgetW = double.parse(resizedWidget.attributes["width"]);
     double widgetH = double.parse(resizedWidget.attributes["height"]);
 
-    switch (position) {
+    anchor.attributes["x"] = "${widgetX + widgetW}";
+    anchor.attributes["y"] = "${widgetY + widgetH}";
 
-      case AnchorPosition.TOP:
-        anchor.attributes["x"] = "${widgetX + (widgetW / 2) - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY - (SIZE/2)}";
-
-        break;
-      case AnchorPosition.BOTTOM:
-        anchor.attributes["x"] = "${widgetX + (widgetW / 2) - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY + widgetH - (SIZE/2)}";
-        break;
-      case AnchorPosition.LEFT:
-        anchor.attributes["x"] = "${widgetX - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY + (widgetH / 2) - (SIZE/2)}";
-        break;
-      case AnchorPosition.RIGHT:
-        anchor.attributes["x"] = "${widgetX + widgetW - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY + (widgetH / 2) - (SIZE/2)}";
-        break;
-      case AnchorPosition.TOP_LEFT:
-        anchor.attributes["x"] = "${widgetX - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY - (SIZE/2)}";
-        break;
-      case AnchorPosition.TOP_RIGHT:
-        anchor.attributes["x"] = "${widgetX + widgetW - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY - (SIZE/2)}";
-        break;
-      case AnchorPosition.BOTTOM_LEFT:
-        anchor.attributes["x"] = "${widgetX - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY + widgetH - (SIZE/2)}";
-        break;
-      case AnchorPosition.BOTTOM_RIGHT:
-        anchor.attributes["x"] = "${widgetX + widgetW - (SIZE/2)}";
-        anchor.attributes["y"] = "${widgetY + widgetH - (SIZE/2)}";
-        break;
-
-    }
   }
 
-}
-
-class AnchorPosition {
-  final _value;
-  const AnchorPosition._internal(this._value);
-  toString() => 'Enum.$_value';
-
-  static const LEFT = const AnchorPosition._internal('LEFT');
-  static const RIGHT = const AnchorPosition._internal('RIGHT');
-  static const TOP = const AnchorPosition._internal('TOP');
-  static const BOTTOM = const AnchorPosition._internal('BOTTOM');
-  static const TOP_LEFT = const AnchorPosition._internal('TOP_LEFT');
-  static const TOP_RIGHT = const AnchorPosition._internal('TOP_RIGHT');
-  static const BOTTOM_LEFT = const AnchorPosition._internal('BOTTOM_LEFT');
-  static const BOTTOM_RIGHT = const AnchorPosition._internal('BOTTOM_RIGHT');
 }

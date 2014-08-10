@@ -2,6 +2,7 @@ library boxy;
 
 import 'dart:html';
 import 'dart:svg';
+import 'dart:math' hide Point ;
 
 part './view/boxy_view.dart';
 
