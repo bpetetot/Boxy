@@ -8,10 +8,15 @@ part './view/boxy_view.dart';
 
 part './handlers/handler.dart';
 part './handlers/drag_handler.dart';
-part './handlers/resize_handler.dart';
+part 'handlers/resize_handler.dart';
+
+part './selectors/selector_manager.dart';
+part './selectors/selector.dart';
+part './selectors/rubber.dart';
+part './selectors/grip_resize.dart';
+part './selectors/grip_rotate.dart';
 
 part './widgets/widget.dart';
 part './widgets/anchor.dart';
 part './widgets/rectangle.dart';
-part './widgets/circle.dart';
 part './widgets/ellipse.dart';

@@ -2,15 +2,12 @@ part of boxy;
 
 abstract class Widget {
 
-  final SvgElement group = new SvgElement.tag("g");
-  final SvgElement toolsGroup = new SvgElement.tag("g");
-  
   SvgElement element;
 
-  // Handlers
-  ResizeHandler resizeHandler;
-  DragHandler dragHandler;
-  
+  bool resizable;
+
+  bool dragable;
+
   double get x;
 
   double get y;
@@ -28,36 +25,51 @@ abstract class Widget {
   void set height(double height);
 
   SvgSvgElement get svg => element.ownerSvgElement;
-  
+
   void attach(SvgElement parent) {
-
-    group.append(element);
-    group.append(toolsGroup);
-    
-    parent.append(group);
-
-    if (dragHandler != null) {
-      dragHandler.register(this, (e) => onDrag(e));
-    }
-
-    if (resizeHandler != null) {
-      resizeHandler.register(this);
-    }
-    
-  }
-  
-  
-  void onDrag(MouseEvent e) {
-    if (resizeHandler != null) {
-      resizeHandler.updateAnchorPosition();
-    }
+    parent.append(element);
   }
 
-  Point transformPointToElement(Point point) {
-    Matrix m = element.getTransformToElement(svg).inverse();
-    m.e = 0;
-    m.f = 0;
-    return point.matrixTransform(m);
+  void dettach() {
+    element.remove();
+  }
+
+  void translate(num dx, num dy) {
+    element.attributes["transform"] = "translate(${dx}, ${dy})";
+  }
+
+  void scale(num dx, num dy) {
+    num ratioX = ((width + dx) / width);
+    num ratioY = ((height + dy) / height);
+
+    num translateX = -x * (ratioX - 1);
+    num translateY = -y * (ratioY - 1);
+    element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
+  }
+
+  void rotate(num degrees) {
+    element.attributes["transform"] = "rotate(${degrees})";
+  }
+
+  void updateCoordinates() {
+    var matrix = element.getCtm();
+    var position = svg.createSvgPoint();
+    position.x = x;
+    position.y = y;
+    position = position.matrixTransform(matrix);
+
+    var position2 = svg.createSvgPoint();
+    position2.x = x + width;
+    position2.y = y + height;
+    position2 = position2.matrixTransform(matrix);
+
+    width = (position2.x - position.x).abs();
+    height = (position2.y - position.y).abs();
+    x = position.x;
+    y = position.y;
+
+
+    element.attributes["transform"] = "";
   }
 
 }

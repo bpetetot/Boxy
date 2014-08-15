@@ -11,7 +11,8 @@ class EllipseBoxy extends Widget {
       "ry": "$ry",
       "stroke": "black",
       "fill": "white",
-      "stroke-width": "1"
+      "stroke-width": "1",
+      "vector-effect" : "non-scaling-stroke"
     };
   }
 

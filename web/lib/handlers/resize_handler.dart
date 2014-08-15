@@ -5,8 +5,6 @@ class ResizeHandler extends WidgetHandler {
   Widget _widget;
   AnchorBoxy _anchor;
 
-  static final double _SIZE = 10.0;
-
   ResizeHandler() : super("resize") {}
 
   void register(Widget widget, [onResize()]) {
@@ -23,7 +21,7 @@ class ResizeHandler extends WidgetHandler {
   
   void _addAnchor(MouseEvent e) {
     if (_anchor == null) {
-      _anchor = new AnchorBoxy(_widget, _SIZE, () => _resize());
+      _anchor = new AnchorBoxy(_widget, () => _resize());
       _anchor.attach(_widget.toolsGroup);
     }
   }

@@ -12,7 +12,8 @@ class RectangleBoxy extends Widget {
       "height": "$height",
       "stroke": "black",
       "fill": "white",
-      "stroke-width": "1"
+      "stroke-width": "1",
+      "vector-effect" : "non-scaling-stroke"
     };
 
   }
