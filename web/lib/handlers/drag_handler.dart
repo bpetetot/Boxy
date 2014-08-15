@@ -49,6 +49,8 @@ class DragHandler extends WidgetHandler {
 
       _widget.x = _widget.x + pt.x;
       _widget.y = _widget.y + pt.y;
+      
+      //_widget.element.attributes["transform"] = "translate(${pt.x}, ${pt.y})";
 
       if (onDrag != null) {
         onDrag(e);
