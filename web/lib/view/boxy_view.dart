@@ -13,6 +13,7 @@ class BoxyView {
   final GElement _SELECTORS_GROUP = new GElement();
   
   SelectorManager _selectorManager;
+  ConnectorManager _connectorManager;
 
   int nbLayers = 0;
 
@@ -50,6 +51,9 @@ class BoxyView {
     
     // Create the Selection Manager
     _selectorManager = new SelectorManager(_SELECTORS_GROUP);
+    
+    // Create the Connector Manager
+    _connectorManager = new ConnectorManager(_SELECTORS_GROUP);
 
     querySelector(viewId).append(_SVG_ROOT);
   }
@@ -65,6 +69,7 @@ class BoxyView {
 
     // Register widget to the selection manager
     _selectorManager.registerWidget(widget);
+    _connectorManager.registerWidget(widget);
 
   }
 

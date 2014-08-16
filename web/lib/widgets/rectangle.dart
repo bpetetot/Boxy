@@ -19,8 +19,12 @@ class RectangleBoxy extends Widget {
   }
 
   double get x => double.parse(element.attributes["x"]);
+  
+  double get cx => x + (width / 2);
 
   double get y => double.parse(element.attributes["y"]);
+  
+  double get cy => y + (height / 2);
 
   double get width => double.parse(element.attributes["width"]);
 
