@@ -8,44 +8,51 @@ class GripResize extends SelectorItem {
   static final double _LINE_WIDTH = 0.2;
   static final String _COLOR = "red";
 
-  GripResize() {
+  GripResize(String selectorName) {
+
+    this.selectorName = selectorName;
+
     element = new CircleElement();
 
     element.attributes = {
+      "id": selectorName,
       "r": "${_SIZE / 2}",
       "stroke": _COLOR,
       "stroke-width": "${_LINE_WIDTH}",
       "fill": "transparent"
     };
-  } 
+  }
 
   void onDrag(num dx, num dy) {
-    // compute scale and translate ratio
-    num ratioX = ((selector._rubber.width + dx) / selector._rubber.width);
-    num ratioY = ((selector._rubber.height + dy) / selector._rubber.height);
 
-    num translateX = -selector._rubber.x * (ratioX - 1);
-    num translateY = -selector._rubber.y * (ratioY - 1);
-    
     // Manage selector elements
-    element.attributes["transform"] = "translate(${dx}, ${dy})";
-    selector._rubber.element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
-    selector._gripRotate.element.attributes["transform"] = "translate(${dx / 2}, 0)";
-    
+    this.translate(dx, dy);
+
+    selector._gripRotate.translate(dx / 2, 0);
+
+    selector._rubber.scale(dx, dy);
+
     selector.selectedWidget.scale(dx, dy);
   }
 
   void onDragEnd(num dx, num dy) {
     selector.updateSelectorsCoordinates();
     selector.selectedWidget.updateCoordinates();
-    element.attributes["transform"] = "";
+  }
+
+  void translate(num dx, num dy) {
+    element.attributes["transform"] = "translate(${dx}, ${dy})";
   }
 
   double get ray => double.parse(element.attributes["r"]);
 
   double get x => double.parse(element.attributes["cx"]) - ray;
 
+  double get cx => x + ray;
+
   double get y => double.parse(element.attributes["cy"]) - ray;
+
+  double get cy => y + ray;
 
   double get width => ray * 2;
 

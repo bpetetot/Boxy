@@ -6,9 +6,11 @@ import 'dart:math' hide Point ;
 
 part './view/boxy_view.dart';
 
+part './utils/math_utils.dart';
+
 part './handlers/handler.dart';
 part './handlers/drag_handler.dart';
-part 'handlers/resize_handler.dart';
+part './handlers/resize_handler.dart';
 
 part './selectors/selector_manager.dart';
 part './selectors/selector.dart';

@@ -5,7 +5,7 @@ void main() {
   BoxyView boxy = new BoxyView("#viewport");
   boxy.displayGrid();
 
-  RectangleBoxy widget = new RectangleBoxy(10.0, 10.0, 200.0, 100.0);
+  RectangleBoxy widget = new RectangleBoxy(10.0, 10.0, 200.0, 200.0);
   widget.dragable = true;
   widget.resizable = true;
   boxy.addWidget(widget);

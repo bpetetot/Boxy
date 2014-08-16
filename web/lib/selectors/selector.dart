@@ -8,11 +8,11 @@ class Selector {
   final GElement _selectorGroup = new GElement();
 
   // Rubber
-  final Rubber _rubber = new Rubber();
+  final Rubber _rubber = new Rubber('rubber-selector');
 
   // Grips
-  final GripResize _gripResize = new GripResize();
-  final GripRotate _gripRotate = new GripRotate();
+  final GripResize _gripResize = new GripResize('resize-grip');
+  final GripRotate _gripRotate = new GripRotate('rotate-grip');
 
   Selector(this.selectedWidget) {
     _selectorGroup.attributes['id'] = "selectors-1";
@@ -29,6 +29,9 @@ class Selector {
   }
 
   void dettach() {
+    _rubber.dettach();
+    _gripResize.dettach();
+    _gripRotate.dettach();
     _selectorGroup.remove();
   }
 
@@ -39,7 +42,7 @@ class Selector {
     _gripRotate.updateCoordinates();
 
     // Reset transformations
-    _selectorGroup.attributes["transform"] = "";
+    //_selectorGroup.attributes["transform"] = "";
   }
 
   void _createRubber() {
@@ -66,6 +69,10 @@ class Selector {
 
 abstract class SelectorItem {
 
+  String selectorName;
+
+  static String currentSelector;
+
   SvgElement element;
 
   void onDrag(num dx, num dy);
@@ -75,6 +82,10 @@ abstract class SelectorItem {
   double get x;
 
   double get y;
+  
+  double get cx;
+
+  double get cy;
 
   double get width;
 
@@ -99,31 +110,45 @@ abstract class SelectorItem {
   Point _lastMouse;
   Point _lastDelta;
 
+  List listeners = [];
+
   void attach(SvgElement selectorsView) {
     selectorsView.append(element);
 
-    element.onMouseDown.listen((event) => beginDrag(event));
-    element.onMouseMove.listen((event) => drag(event));
-    element.onMouseUp.listen((event) => endDrag(event));
-    rootSvg.onMouseMove.listen((event) => drag(event));
-    rootSvg.onMouseUp.listen((event) => endDrag(event));
+    listeners.add(element.onMouseDown.listen((event) => beginDrag(selectorName, event)));
+    listeners.add(element.onMouseMove.listen((event) => drag(selectorName, event)));
+    listeners.add(element.onMouseUp.listen((event) => endDrag(selectorName, event)));
+    listeners.add(rootSvg.onMouseMove.listen((event) => drag(selectorName, event)));
+    listeners.add(rootSvg.onMouseUp.listen((event) => endDrag(selectorName, event)));
 
     _lastMouse = parentSvg.createSvgPoint();
     _lastDelta = parentSvg.createSvgPoint();
   }
 
+  void dettach() {
+    // Remove listeners
+    for (var listener in listeners) {
+      listener.cancel();
+    }
+    // Remove element
+    element.remove();
+  }
+
   // ---- Draggable Methods
-  void beginDrag(MouseEvent e) {
+  void beginDrag(String selectorName, MouseEvent e) {
+    currentSelector = selectorName;
+
     _dragged = true;
     _lastMouse.x = e.page.x;
     _lastMouse.y = e.page.y;
     _lastDelta.x = 0;
     _lastDelta.y = 0;
+
   }
 
-  void drag(MouseEvent e) {
+  void drag(String selectorName, MouseEvent e) {
 
-    if (_dragged) {
+    if (selectorName == currentSelector && _dragged) {
 
       // Convert the global point into the space of the object you are dragging
       Point pt = parentSvg.createSvgPoint();
@@ -142,9 +167,11 @@ abstract class SelectorItem {
     }
   }
 
-  void endDrag(Event e) {
-    _dragged = false;
-    onDragEnd(_lastDelta.x, _lastDelta.y);
+  void endDrag(String selectorName, Event e) {
+    if (selectorName == currentSelector) {
+      _dragged = false;
+      onDragEnd(_lastDelta.x, _lastDelta.y);
+    }
   }
 
   Point transformPointToElement(Point point) {
@@ -171,8 +198,8 @@ abstract class SelectorItem {
     x = position.x;
     y = position.y;
 
-
     element.attributes["transform"] = "";
+
   }
 
 }

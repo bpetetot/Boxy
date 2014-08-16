@@ -47,8 +47,13 @@ abstract class Widget {
     element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
   }
 
-  void rotate(num degrees) {
-    element.attributes["transform"] = "rotate(${degrees})";
+  void rotate(num angle) {
+
+    num cx = x + (width / 2);
+    num cy = y + (height / 2);
+
+    element.attributes["transform"] = "rotate(${angle}, ${cx}, ${cy})";
+
   }
 
   void updateCoordinates() {
@@ -67,7 +72,6 @@ abstract class Widget {
     height = (position2.y - position.y).abs();
     x = position.x;
     y = position.y;
-
 
     element.attributes["transform"] = "";
   }
