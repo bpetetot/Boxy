@@ -18,20 +18,20 @@ class Selector {
     _selectorGroup.attributes['id'] = "selectors-1";
     _createRubber();
     _createGripResize();
-    _createGripRotate();
+    //_createGripRotate();
   }
 
   void attach(SvgElement selectorsView) {
     selectorsView.append(_selectorGroup);
     _rubber.attach(_selectorGroup);
     _gripResize.attach(_selectorGroup);
-    _gripRotate.attach(_selectorGroup);
+    //_gripRotate.attach(_selectorGroup);
   }
 
   void dettach() {
     _rubber.dettach();
     _gripResize.dettach();
-    _gripRotate.dettach();
+    //_gripRotate.dettach();
     _selectorGroup.remove();
   }
 
@@ -39,10 +39,7 @@ class Selector {
     // update selector items
     _rubber.updateCoordinates();
     _gripResize.updateCoordinates();
-    _gripRotate.updateCoordinates();
-
-    // Reset transformations
-    //_selectorGroup.attributes["transform"] = "";
+    //_gripRotate.updateCoordinates();
   }
 
   void _createRubber() {
