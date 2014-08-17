@@ -11,9 +11,9 @@ class BoxyView {
   final GElement _LAYERS_GROUP = new GElement();
 
   final GElement _SELECTORS_GROUP = new GElement();
-  
+
   DevLogger logger;
-  
+
   SelectorManager _selectorManager;
   ConnectorManager _connectorManager;
 
@@ -23,18 +23,18 @@ class BoxyView {
 
   final Map<String, String> _VIEW_ATTRS = {
     'width': '100%',
-    'height': '100%',
-    'preserveAspectRatio': 'none'
+    'height': '500',
+    'shape-rendering': 'auto'
   };
 
   BoxyView(String viewId) {
     // Create SVG views
     _SVG_ROOT.attributes = _VIEW_ATTRS;
-    _SVG_ROOT.attributes['id'] = "svg-root";  
-    
+    _SVG_ROOT.attributes['id'] = "svg-root";
+
     _SVG_BACKGROUND.attributes = _VIEW_ATTRS;
     _SVG_BACKGROUND.attributes['id'] = "svg-bg";
-    
+
     _SVG_CONTENT.attributes = _VIEW_ATTRS;
     _SVG_CONTENT.attributes['id'] = "svg-content";
 
@@ -50,16 +50,16 @@ class BoxyView {
     // Append views to the root
     _SVG_ROOT.append(_SVG_BACKGROUND);
     _SVG_ROOT.append(_SVG_CONTENT);
-    
+
     // Create the Selection Manager
     _selectorManager = new SelectorManager(_SELECTORS_GROUP);
-    
+
     // Create the Connector Manager
     _connectorManager = new ConnectorManager(_SELECTORS_GROUP);
 
     querySelector(viewId).append(_SVG_ROOT);
   }
-  
+
   void enableDevLogger(String viewId) {
     logger = new DevLogger(viewId);
     _SVG_ROOT.onMouseMove.listen((e) => logger.mouseOnContent(e));
@@ -77,7 +77,7 @@ class BoxyView {
     // Register widget to the selection manager
     _selectorManager.registerWidget(widget);
     _connectorManager.registerWidget(widget);
-    
+
     // logger
     if (logger != null) {
       widget.element.onMouseMove.listen((e) => logger.onWidget(widget, e));
@@ -122,7 +122,7 @@ class BoxyView {
       window.console.error("Layer '$layer' doesn't exist.");
     }
   }
-
+  
   void displayGrid() {
 
     final int step = 20;

@@ -12,12 +12,12 @@ class Connector {
     element = new RectElement();
 
     element.attributes = {
-      "stroke": "red",
+      "stroke": "blue",
       "stroke-width": "1",
-      "height": "3",
-      "width": "3",
-      "x": "${this.widget.cx}",
-      "y": "${this.widget.cy}",
+      "height": "5",
+      "width": "5",
+      "x": "${this.widget.cx - 2.5}",
+      "y": "${this.widget.cy - 2.5}",
       "fill": "transparent",
       "vector-effect": "non-scaling-stroke",
       "shape-rendering": "auto"
@@ -25,6 +25,8 @@ class Connector {
 
     // start connector creation
     element.onMouseUp.listen((e) => manager.onConnect(this));
+    element.onMouseOver.listen((e) => element.attributes["fill"] = "blue");
+    element.onMouseOut.listen((e) => element.attributes["fill"] = "transparent");
 
     // listen widget updates
     widget.addTranslateListener((dx, dy) => translate(dx, dy));
@@ -47,8 +49,8 @@ class Connector {
   }
 
   void update() {
-    element.attributes["x"] = "${this.widget.cx}";
-    element.attributes["y"] = "${this.widget.cy}";
+    element.attributes["x"] = "${this.widget.cx - 2.5}";
+    element.attributes["y"] = "${this.widget.cy - 2.5}";
     element.attributes["transform"] = "";
   }
 

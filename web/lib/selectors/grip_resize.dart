@@ -3,8 +3,9 @@ part of boxy;
 class GripResize extends SelectorItem {
 
   static final double _SIZE = 10.0;
-  static final double _LINE_WIDTH = 0.2;
+  static final double _LINE_WIDTH = 1.0;
   static final String _COLOR = "red";
+  static final String _CURSOR = "nwse-resize";
 
   GripResize(String selectorName, Widget selectedWidget) : super(selectedWidget) {
 
@@ -15,13 +16,14 @@ class GripResize extends SelectorItem {
     element.attributes = {
       "id": selectorName,
       "r": "${_SIZE / 2}",
+      "cursor": _CURSOR,
       "stroke": _COLOR,
       "stroke-width": "${_LINE_WIDTH}",
-      "fill": "transparent"
+      "fill": "red"
     };
 
-    this.x = selectedWidget.x + selectedWidget.width + 2;
-    this.y = selectedWidget.y + selectedWidget.height + 2;
+    this.x = selectedWidget.x + selectedWidget.width + 3;
+    this.y = selectedWidget.y + selectedWidget.height + 3;
 
   }
 

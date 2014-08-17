@@ -2,7 +2,7 @@ part of boxy;
 
 class Rubber extends SelectorItem {
 
-  static final double _LINE_WIDTH = 0.2;
+  static final double _LINE_WIDTH = 1.5;
   static final String _COLOR = "blue";
   static final String _CURSOR = "move";
 
@@ -16,16 +16,17 @@ class Rubber extends SelectorItem {
       "id": selectorName,
       "stroke": _COLOR,
       "stroke-width": "${_LINE_WIDTH}",
+      "stroke-dasharray": "10 5",
       "cursor": _CURSOR,
       "fill": "transparent",
       "vector-effect": "non-scaling-stroke",
       "shape-rendering": "auto"
     };
 
-    x = selectedWidget.x - 2;
-    y = selectedWidget.y - 2;
-    width = selectedWidget.width + 4;
-    height = selectedWidget.height + 4;
+    x = selectedWidget.x - 3;
+    y = selectedWidget.y - 3;
+    width = selectedWidget.width + 6;
+    height = selectedWidget.height + 6;
 
   }
 

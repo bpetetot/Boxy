@@ -5,7 +5,7 @@ import 'dart:html';
 void main() {
 
   BoxyView boxy = new BoxyView("#viewport");
-  boxy.displayGrid();
+  //boxy.displayGrid();
   boxy.enableDevLogger("#info");
 
   querySelector("#addSquare").onClick.listen((e) => addSquare(boxy));
