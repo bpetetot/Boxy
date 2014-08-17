@@ -2,13 +2,11 @@ part of boxy;
 
 class Rubber extends SelectorItem {
 
-  Selector selector;
-
   static final double _LINE_WIDTH = 0.2;
   static final String _COLOR = "blue";
   static final String _CURSOR = "move";
 
-  Rubber(String selectorName) {
+  Rubber(String selectorName, Widget selectedWidget) : super(selectedWidget) {
 
     this.selectorName = selectorName;
 
@@ -24,40 +22,30 @@ class Rubber extends SelectorItem {
       "shape-rendering": "auto"
     };
 
+    x = selectedWidget.x - 2;
+    y = selectedWidget.y - 2;
+    width = selectedWidget.width + 4;
+    height = selectedWidget.height + 4;
+
+  }
+
+  void attach(SvgElement parent) {
+    super.attach(parent);
+
+    // Manage listeners
+    // FIXME Add a subscription list into widget to automatically discards on dettach
+    this.addTranslateListener((x, y) => selectedWidget.translate(x, y));
+    selectedWidget.addResizeListener((x, y) => this.scale(x, y));
+    selectedWidget.addUpdateListener(() => this.updateCoordinates());
+
   }
 
   void onDrag(num dx, num dy) {
-    // Manage selector elements
     this.translate(dx, dy);
-    selector._gripResize.translate(dx, dy);
-    selector._gripRotate.translate(dx, dy);
-
-    // Manage widget
-    selector.selectedWidget.translate(dx, dy);
   }
 
   void onDragEnd(num dx, num dy) {
-
-    selector.updateSelectorsCoordinates();
-    selector.selectedWidget.updateCoordinates();
-
-  }
-  
-  void translate(num dx, num dy) {
-      element.attributes["transform"] = "translate(${dx}, ${dy})";
-   
-  }
-
-
-  void scale(num dx, num dy) {
-    // compute scale and translate ratio
-    num ratioX = ((width + dx) / width);
-    num ratioY = ((height + dy) / height);
-
-    num translateX = -x * (ratioX - 1);
-    num translateY = -y * (ratioY - 1);
-
-    selector._rubber.element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
+    selectedWidget.updateCoordinates();
   }
 
   double get x => double.parse(element.attributes["x"]);

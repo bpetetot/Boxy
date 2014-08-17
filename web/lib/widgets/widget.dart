@@ -45,6 +45,7 @@ abstract class Widget {
   }
 
   // ---- Boxy Events
+  // FIXME : listener discards
 
   List<dynamic> translateListeners = [];
 
@@ -54,8 +55,8 @@ abstract class Widget {
 
   List<dynamic> updateListeners = [];
 
-  void addUpdateListener(void onUpdate(x, y)) {
-    updateListeners.add((x, y) => onUpdate(x, y));
+  void addUpdateListener(void onUpdate()) {
+    updateListeners.add(() => onUpdate());
   }
   
   List<dynamic> resizeListeners = [];
@@ -114,8 +115,8 @@ abstract class Widget {
     x = position.x;
     y = position.y;
 
-    for (dynamic listener in updateListeners) {
-      listener(x, y);
+    for (dynamic updater in updateListeners) {
+      updater();
     }
 
     element.attributes["transform"] = "";

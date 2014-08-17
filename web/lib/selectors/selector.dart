@@ -7,111 +7,68 @@ class Selector {
   // Group
   final GElement _selectorGroup = new GElement();
 
-  // Rubber
-  final Rubber _rubber = new Rubber('rubber-selector');
-
-  // Grips
-  final GripResize _gripResize = new GripResize('resize-grip');
-  final GripRotate _gripRotate = new GripRotate('rotate-grip');
+  // Rubber & grips
+  Rubber _rubber;
+  GripResize _gripResize;
+  GripRotate _gripRotate;
 
   Selector(this.selectedWidget) {
     _selectorGroup.attributes['id'] = "selectors-1";
-    _createRubber();
-    _createGripResize();
-    //_createGripRotate();
+
+    if (selectedWidget.dragable) {
+      _rubber = new Rubber('rubber-selector', selectedWidget);
+    }
+    if (selectedWidget.resizable) {
+      _gripResize = new GripResize('resize-grip', selectedWidget);
+    }
+    //_gripRotate = new GripRotate('rotate-grip', selectedWidget);
   }
 
   void attach(SvgElement selectorsView) {
     selectorsView.append(_selectorGroup);
-    _rubber.attach(_selectorGroup);
-    _gripResize.attach(_selectorGroup);
-    //_gripRotate.attach(_selectorGroup);
+
+    if (selectedWidget.dragable) {
+      _rubber.attach(_selectorGroup);
+    }
+    if (selectedWidget.resizable) {
+      _gripResize.attach(_selectorGroup);
+    }
   }
 
   void dettach() {
-    _rubber.dettach();
-    _gripResize.dettach();
-    //_gripRotate.dettach();
+    if (selectedWidget.dragable) {
+      _rubber.dettach();
+    }
+    if (selectedWidget.resizable) {
+      _gripResize.dettach();
+    }
     _selectorGroup.remove();
-  }
-
-  void updateSelectorsCoordinates() {
-    // update selector items
-    _rubber.updateCoordinates();
-    _gripResize.updateCoordinates();
-    //_gripRotate.updateCoordinates();
-  }
-
-  void _createRubber() {
-    _rubber.selector = this;
-    _rubber.x = selectedWidget.x - 2;
-    _rubber.y = selectedWidget.y - 2;
-    _rubber.width = selectedWidget.width + 4;
-    _rubber.height = selectedWidget.height + 4;
-  }
-
-  void _createGripResize() {
-    _gripResize.selector = this;
-    _gripResize.x = selectedWidget.x + selectedWidget.width + 2;
-    _gripResize.y = selectedWidget.y + selectedWidget.height + 2;
-  }
-
-  void _createGripRotate() {
-    _gripRotate.selector = this;
-    _gripRotate.x = selectedWidget.x + (selectedWidget.width / 2);
-    _gripRotate.y = selectedWidget.y - 20;
   }
 
 }
 
-abstract class SelectorItem {
+abstract class SelectorItem extends Widget {
 
   String selectorName;
 
+  Widget selectedWidget;
+
   static String currentSelector;
 
-  SvgElement element;
-
-  void onDrag(num dx, num dy);
-
-  void onDragEnd(num dx, num dy);
-
-  double get x;
-
-  double get y;
-
-  double get cx;
-
-  double get cy;
-
-  double get width;
-
-  double get height;
-
-  void set x(double x);
-
-  void set y(double y);
-
-  void set width(double width);
-
-  void set height(double height);
-
   bool _dragged = false;
-
-  GElement get selectorGroup => element.parent;
-
-  SvgSvgElement get parentSvg => element.ownerSvgElement;
-
-  SvgSvgElement get rootSvg => element.ownerSvgElement.ownerSvgElement;
-
   var _lastMouse;
   var _lastDelta;
 
   List listeners = [];
 
-  void attach(SvgElement selectorsView) {
-    selectorsView.append(element);
+  SelectorItem(this.selectedWidget);
 
+  // ---- Override widget methods
+
+  void attach(SvgElement parent) {
+    super.attach(parent);
+
+    // Add listeners used to drag
     listeners.add(element.onMouseDown.listen((event) => beginDrag(selectorName, event)));
     listeners.add(element.onMouseMove.listen((event) => drag(selectorName, event)));
     listeners.add(element.onMouseUp.listen((event) => endDrag(selectorName, event)));
@@ -128,10 +85,15 @@ abstract class SelectorItem {
       listener.cancel();
     }
     // Remove element
-    element.remove();
+    super.dettach();
   }
 
   // ---- Draggable Methods
+
+  void onDrag(num dx, num dy);
+
+  void onDragEnd(num dx, num dy);
+
   void beginDrag(String selectorName, MouseEvent e) {
     currentSelector = selectorName;
 
@@ -170,26 +132,5 @@ abstract class SelectorItem {
   }
 
 
-
-  void updateCoordinates() {
-
-    var position = parentSvg.createSvgPoint();
-    position.x = x;
-    position.y = y;
-    position = SvgUtils.coordinateTransform(position, element);
-
-    var position2 = parentSvg.createSvgPoint();
-    position2.x = x + width;
-    position2.y = y + height;
-    position2 = SvgUtils.coordinateTransform(position2, element);
-
-    width = (position2.x - position.x).abs();
-    height = (position2.y - position.y).abs();
-    x = position.x;
-    y = position.y;
-
-    element.attributes["transform"] = "";
-
-  }
 
 }

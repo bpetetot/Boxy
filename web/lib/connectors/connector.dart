@@ -28,7 +28,7 @@ class Connector {
 
     // listen widget updates
     widget.addTranslateListener((dx, dy) => translate(dx, dy));
-    widget.addUpdateListener((x, y) => update(x, y));
+    widget.addUpdateListener(() => update());
 
   }
 
@@ -46,7 +46,7 @@ class Connector {
     }
   }
 
-  void update(num x, num y) {
+  void update() {
     element.attributes["x"] = "${this.widget.cx}";
     element.attributes["y"] = "${this.widget.cy}";
     element.attributes["transform"] = "";

@@ -2,13 +2,11 @@ part of boxy;
 
 class GripRotate extends SelectorItem {
 
-  Selector selector;
-
   static final double _SIZE = 10.0;
   static final double _LINE_WIDTH = 0.2;
   static final String _COLOR = "green";
 
-  GripRotate(String selectorName) {
+  GripRotate(String selectorName, Widget selectedWidget) : super(selectedWidget) {
 
     this.selectorName = selectorName;
 
@@ -21,19 +19,33 @@ class GripRotate extends SelectorItem {
       "stroke-width": "${_LINE_WIDTH}",
       "fill": "transparent"
     };
+
+    this.x = selectedWidget.x + (selectedWidget.width / 2);
+    this.y = selectedWidget.y - 20;
+
+  }
+
+  void attach(SvgElement parent) {
+    super.attach(parent);
+
+    // Manage listeners
+    // FIXME Add a subscription list into widget to automatically discards on dettach
+    selectedWidget.addResizeListener((x, y) => this.scale(x, y));
+    selectedWidget.addTranslateListener((x, y) => this.translate(x, y));
+    selectedWidget.addUpdateListener(() => this.updateCoordinates());
   }
 
   void onDrag(num dx, num dy) {
     // compute degree
     num circleRay;
-    if (selector._rubber.width > selector._rubber.height) {
-      circleRay = selector._rubber.width / 2;
+    if (selectedWidget.width > selectedWidget.height) {
+      circleRay = selectedWidget.width / 2;
     } else {
-      circleRay = selector._rubber.height / 2;
+      circleRay = selectedWidget.height / 2;
     }
 
-    num cx = selector._rubber.cx;
-    num cy = selector._rubber.cy;
+    num cx = selectedWidget.cx;
+    num cy = selectedWidget.cy;
 
     num angleRad = acos((x + dx - cx) / circleRay);
 
@@ -42,9 +54,9 @@ class GripRotate extends SelectorItem {
 
     num angle = 90 - MathUtils.radToDeg(angleRad);
 
-    element.attributes["transform"] = "translate(${circleX - selector._rubber.x - (selector._rubber.width / 2)}, ${circleY  - selector._rubber.y - (selector._rubber.height / 2)})";
+    element.attributes["transform"] = "translate(${circleX - selectedWidget.x - (selectedWidget.width / 2)}, ${circleY  - selectedWidget.y - (selectedWidget.height / 2)})";
 
-    selector._selectorGroup.attributes["transform"] = "rotate($angle,${cx}, ${cy})";
+    //selector._selectorGroup.attributes["transform"] = "rotate($angle,${cx}, ${cy})";
 
     //selector.selectedWidget.rotate(rotationAngle);
   }
@@ -55,8 +67,8 @@ class GripRotate extends SelectorItem {
     //element.attributes["transform"] = "";
   }
 
-  void translate(num dx, num dy) {
-    element.attributes["transform"] = "translate(${dx}, ${dy})";
+  void scale(num dx, num dy) {
+    this.translate(dx / 2, 0);
   }
 
   double get ray => double.parse(element.attributes["r"]);

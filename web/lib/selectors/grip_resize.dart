@@ -2,13 +2,11 @@ part of boxy;
 
 class GripResize extends SelectorItem {
 
-  Selector selector;
-
   static final double _SIZE = 10.0;
   static final double _LINE_WIDTH = 0.2;
   static final String _COLOR = "red";
 
-  GripResize(String selectorName) {
+  GripResize(String selectorName, Widget selectedWidget) : super(selectedWidget) {
 
     this.selectorName = selectorName;
 
@@ -21,6 +19,21 @@ class GripResize extends SelectorItem {
       "stroke-width": "${_LINE_WIDTH}",
       "fill": "transparent"
     };
+
+    this.x = selectedWidget.x + selectedWidget.width + 2;
+    this.y = selectedWidget.y + selectedWidget.height + 2;
+
+  }
+
+  void attach(SvgElement parent) {
+    super.attach(parent);
+
+    // Manage listeners
+    // FIXME Add a subscription list into widget to automatically discards on dettach
+    this.addResizeListener((x, y) => selectedWidget.scale(x, y));
+    selectedWidget.addTranslateListener((x, y) => this.translate(x, y));
+    selectedWidget.addUpdateListener(() => this.updateCoordinates());
+
   }
 
   void onDrag(num dx, num dy) {
@@ -28,20 +41,14 @@ class GripResize extends SelectorItem {
     // Manage selector elements
     this.translate(dx, dy);
 
-    selector._gripRotate.translate(dx / 2, 0);
+    for (dynamic listener in resizeListeners) {
+      listener(dx, dy);
+    }
 
-    selector._rubber.scale(dx, dy);
-
-    selector.selectedWidget.scale(dx, dy);
   }
 
   void onDragEnd(num dx, num dy) {
-    selector.updateSelectorsCoordinates();
-    selector.selectedWidget.updateCoordinates();
-  }
-
-  void translate(num dx, num dy) {
-    element.attributes["transform"] = "translate(${dx}, ${dy})";
+    selectedWidget.updateCoordinates();
   }
 
   double get ray => double.parse(element.attributes["r"]);
