@@ -29,8 +29,8 @@ class Connector {
     element.onMouseOut.listen((e) => element.attributes["fill"] = "transparent");
 
     // listen widget updates
-    widget.addTranslateListener((dx, dy) => translate(dx, dy));
-    widget.addUpdateListener(() => update());
+    widget.onTranslate.listen((dx, dy) => translate(dx, dy));
+    widget.onUpdate.listen(() =>update());
 
   }
 

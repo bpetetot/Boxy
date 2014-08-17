@@ -30,23 +30,20 @@ class GripResize extends SelectorItem {
   void attach(SvgElement parent) {
     super.attach(parent);
 
-    // Manage listeners
-    // FIXME Add a subscription list into widget to automatically discards on dettach
-    this.addResizeListener((x, y) => selectedWidget.scale(x, y));
-    selectedWidget.addTranslateListener((x, y) => this.translate(x, y));
-    selectedWidget.addUpdateListener(() => this.updateCoordinates());
+    // Rubber listener
+    this.onResize.listen((x,y) => selectedWidget.scale(x, y));
+
+    // Subscribe to selected widgets events
+    this.subscribedEvents.add(selectedWidget.onTranslate.listen((x,y) => translate(x, y)));
+    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
 
   }
 
   void onDrag(num dx, num dy) {
-
     // Manage selector elements
     this.translate(dx, dy);
-
-    for (dynamic listener in resizeListeners) {
-      listener(dx, dy);
-    }
-
+    // Notify listeners
+    onResize.notify(dx, dy);
   }
 
   void onDragEnd(num dx, num dy) {

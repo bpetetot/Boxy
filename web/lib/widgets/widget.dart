@@ -29,9 +29,9 @@ abstract class Widget {
   void set height(double height);
 
   // ---- SVG Methods
-  
+
   SvgSvgElement get parentSvg => element.ownerSvgElement;
-  
+
   SvgSvgElement get rootSvg => parentSvg.ownerSvgElement;
 
   // ---- Attach / Dettach
@@ -42,51 +42,37 @@ abstract class Widget {
 
   void dettach() {
     element.remove();
+    // cancel listeners
+    subscribedEvents.forEach((e) => e.cancel());
   }
 
-  // ---- Boxy Events
-  // FIXME : listener discards
-
-  List<dynamic> translateListeners = [];
-
-  void addTranslateListener(void onTranslate(x, y)) {
-    translateListeners.add((x, y) => onTranslate(x, y));
-  }
-
-  List<dynamic> updateListeners = [];
-
-  void addUpdateListener(void onUpdate()) {
-    updateListeners.add(() => onUpdate());
-  }
+  // ---- Widget listeners
+  List<SubscribeEventBoxy> subscribedEvents = [];
   
-  List<dynamic> resizeListeners = [];
-
-  void addResizeListener(void onResize(x, y)) {
-    resizeListeners.add((x, y) => onResize(x, y));
-  }
-
+  TranslateListener onTranslate = new TranslateListener();
+  ResizeListener onResize = new ResizeListener();
+  UpdateListener onUpdate = new UpdateListener();
+  
   // ---- Widget transforms
 
   void translate(num dx, num dy) {
+    // translate the widget
     element.attributes["transform"] = "translate(${dx}, ${dy})";
-
-    for (dynamic listener in translateListeners) {
-      listener(dx, dy);
-    }
+    // notify listeners
+    onTranslate.notify(dx, dy);
   }
 
   void scale(num dx, num dy) {
-    
+    // scale the widget
     num ratioX = ((width + dx) / width);
     num ratioY = ((height + dy) / height);
 
     num translateX = -x * (ratioX - 1);
     num translateY = -y * (ratioY - 1);
     element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
-  
-    for (dynamic listener in resizeListeners) {
-      listener(dx, dy);
-    }
+
+    // notify listeners
+    onResize.notify(dx, dy);
   }
 
   void rotate(num angle) {
@@ -99,7 +85,7 @@ abstract class Widget {
   }
 
   void updateCoordinates() {
-    
+
     var position = parentSvg.createSvgPoint();
     position.x = x;
     position.y = y;
@@ -115,9 +101,8 @@ abstract class Widget {
     x = position.x;
     y = position.y;
 
-    for (dynamic updater in updateListeners) {
-      updater();
-    }
+    // notify listeners
+    onUpdate.notify();
 
     element.attributes["transform"] = "";
   }

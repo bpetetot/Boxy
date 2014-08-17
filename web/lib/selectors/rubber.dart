@@ -33,11 +33,12 @@ class Rubber extends SelectorItem {
   void attach(SvgElement parent) {
     super.attach(parent);
 
-    // Manage listeners
-    // FIXME Add a subscription list into widget to automatically discards on dettach
-    this.addTranslateListener((x, y) => selectedWidget.translate(x, y));
-    selectedWidget.addResizeListener((x, y) => this.scale(x, y));
-    selectedWidget.addUpdateListener(() => this.updateCoordinates());
+    // Rubber listener
+    this.onTranslate.listen((x,y) => selectedWidget.translate(x, y));
+    
+    // Subscribe to selected widgets events
+    this.subscribedEvents.add(selectedWidget.onResize.listen((x,y) => scale(x, y)));
+    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
 
   }
 

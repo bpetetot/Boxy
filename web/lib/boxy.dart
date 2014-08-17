@@ -10,6 +10,9 @@ part './utils/math_utils.dart';
 part './utils/svg_utils.dart';
 part './utils/loggers.dart';
 
+part './events/event_manager.dart';
+part './events/events_boxy.dart';
+
 part './selectors/selector_manager.dart';
 part './selectors/selector.dart';
 part './selectors/rubber.dart';

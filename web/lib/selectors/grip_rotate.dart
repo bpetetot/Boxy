@@ -28,11 +28,11 @@ class GripRotate extends SelectorItem {
   void attach(SvgElement parent) {
     super.attach(parent);
 
-    // Manage listeners
-    // FIXME Add a subscription list into widget to automatically discards on dettach
-    selectedWidget.addResizeListener((x, y) => this.scale(x, y));
-    selectedWidget.addTranslateListener((x, y) => this.translate(x, y));
-    selectedWidget.addUpdateListener(() => this.updateCoordinates());
+    // Subscribe to selected widgets events
+    this.subscribedEvents.add(selectedWidget.onResize.listen((x, y) => scale(x, y)));
+    this.subscribedEvents.add(selectedWidget.onTranslate.listen((x, y) => translate(x, y)));
+    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
+
   }
 
   void onDrag(num dx, num dy) {
