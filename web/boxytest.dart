@@ -6,11 +6,12 @@ void main() {
 
   BoxyView boxy = new BoxyView("#viewport");
   boxy.displayGrid();
+  boxy.enableDevLogger("#info");
 
   querySelector("#addSquare").onClick.listen((e) => addSquare(boxy));
   
   querySelector("#addEllipse").onClick.listen((e) => addEllipse(boxy));
-
+  
 }
 
 void addSquare(BoxyView boxy) {

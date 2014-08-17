@@ -79,7 +79,7 @@ abstract class SelectorItem {
   double get x;
 
   double get y;
-  
+
   double get cx;
 
   double get cy;
@@ -104,8 +104,8 @@ abstract class SelectorItem {
 
   SvgSvgElement get rootSvg => element.ownerSvgElement.ownerSvgElement;
 
-  Point _lastMouse;
-  Point _lastDelta;
+  var _lastMouse;
+  var _lastDelta;
 
   List listeners = [];
 
@@ -136,8 +136,8 @@ abstract class SelectorItem {
     currentSelector = selectorName;
 
     _dragged = true;
-    _lastMouse.x = e.page.x;
-    _lastMouse.y = e.page.y;
+    _lastMouse.x = e.offset.x;
+    _lastMouse.y = e.offset.y;
     _lastDelta.x = 0;
     _lastDelta.y = 0;
 
@@ -147,19 +147,17 @@ abstract class SelectorItem {
 
     if (selectorName == currentSelector && _dragged) {
 
-      // Convert the global point into the space of the object you are dragging
-      Point pt = parentSvg.createSvgPoint();
-      pt.x = e.page.x - _lastMouse.x + _lastDelta.x;
-      pt.y = e.page.y - _lastMouse.y + _lastDelta.y;
-
-      pt = transformPointToElement(pt);
+      // Compute the delta coordinate to apply from the original coordinate of the element
+      var pt = parentSvg.createSvgPoint();
+      pt.x = e.offset.x - _lastMouse.x + _lastDelta.x;
+      pt.y = e.offset.y - _lastMouse.y + _lastDelta.y;
 
       onDrag(pt.x, pt.y);
 
       _lastDelta = pt;
 
-      _lastMouse.x = e.page.x;
-      _lastMouse.y = e.page.y;
+      _lastMouse.x = e.offset.x;
+      _lastMouse.y = e.offset.y;
 
     }
   }
@@ -171,24 +169,19 @@ abstract class SelectorItem {
     }
   }
 
-  Point transformPointToElement(Point point) {
-    Matrix m = element.getTransformToElement(parentSvg).inverse();
-    m.e = 0;
-    m.f = 0;
-    return point.matrixTransform(m);
-  }
+
 
   void updateCoordinates() {
-    var matrix = element.getCtm();
+
     var position = parentSvg.createSvgPoint();
     position.x = x;
     position.y = y;
-    position = position.matrixTransform(matrix);
+    position = SvgUtils.coordinateTransform(position, element);
 
     var position2 = parentSvg.createSvgPoint();
     position2.x = x + width;
     position2.y = y + height;
-    position2 = position2.matrixTransform(matrix);
+    position2 = SvgUtils.coordinateTransform(position2, element);
 
     width = (position2.x - position.x).abs();
     height = (position2.y - position.y).abs();

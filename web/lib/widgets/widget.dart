@@ -4,9 +4,9 @@ abstract class Widget {
 
   SvgElement element;
 
-  bool resizable;
+  bool resizable = false;
 
-  bool dragable;
+  bool dragable = false;
 
   double get x;
 
@@ -28,7 +28,11 @@ abstract class Widget {
 
   void set height(double height);
 
-  SvgSvgElement get svg => element.ownerSvgElement;
+  // ---- SVG Methods
+  
+  SvgSvgElement get parentSvg => element.ownerSvgElement;
+  
+  SvgSvgElement get rootSvg => parentSvg.ownerSvgElement;
 
   // ---- Attach / Dettach
 
@@ -71,6 +75,7 @@ abstract class Widget {
   }
 
   void scale(num dx, num dy) {
+    
     num ratioX = ((width + dx) / width);
     num ratioY = ((height + dy) / height);
 
@@ -93,16 +98,16 @@ abstract class Widget {
   }
 
   void updateCoordinates() {
-    var matrix = element.getCtm();
-    var position = svg.createSvgPoint();
+    
+    var position = parentSvg.createSvgPoint();
     position.x = x;
     position.y = y;
-    position = position.matrixTransform(matrix);
+    position = SvgUtils.coordinateTransform(position, element);
 
-    var position2 = svg.createSvgPoint();
+    var position2 = parentSvg.createSvgPoint();
     position2.x = x + width;
     position2.y = y + height;
-    position2 = position2.matrixTransform(matrix);
+    position2 = SvgUtils.coordinateTransform(position2, element);
 
     width = (position2.x - position.x).abs();
     height = (position2.y - position.y).abs();

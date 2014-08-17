@@ -7,7 +7,7 @@ class ConnectorPath {
   Connector start;
   Connector end;
 
-  Point _lastMouse;
+  var _lastMouse;
   
   List listeners = [];
 
@@ -60,24 +60,12 @@ class ConnectorPath {
 
   void updateLine(MouseEvent e) {
 
-    // Convert the global point into the space of the object you are dragging
-    Point pt = path.ownerSvgElement.createSvgPoint();
-    pt.x = e.offset.x;
-    pt.y = e.offset.y;
-
-    pt = transformPointToElement(pt);
-
-    path.attributes["x2"] = "${pt.x}";
-    path.attributes["y2"] = "${pt.y}";
+    path.attributes["x2"] = "${e.offset.x}";
+    path.attributes["y2"] = "${e.offset.y}";
 
     _lastMouse.x = e.offset.x;
     _lastMouse.y = e.offset.y;
 
-  }
-
-  Point transformPointToElement(Point point) {
-    Matrix m = path.getTransformToElement(path.ownerSvgElement).inverse();
-    return point.matrixTransform(m);
   }
 
 }

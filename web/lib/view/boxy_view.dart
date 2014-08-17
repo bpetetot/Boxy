@@ -12,6 +12,8 @@ class BoxyView {
 
   final GElement _SELECTORS_GROUP = new GElement();
   
+  DevLogger logger;
+  
   SelectorManager _selectorManager;
   ConnectorManager _connectorManager;
 
@@ -28,7 +30,7 @@ class BoxyView {
   BoxyView(String viewId) {
     // Create SVG views
     _SVG_ROOT.attributes = _VIEW_ATTRS;
-    _SVG_ROOT.attributes['id'] = "svg-root";
+    _SVG_ROOT.attributes['id'] = "svg-root";  
     
     _SVG_BACKGROUND.attributes = _VIEW_ATTRS;
     _SVG_BACKGROUND.attributes['id'] = "svg-bg";
@@ -57,6 +59,11 @@ class BoxyView {
 
     querySelector(viewId).append(_SVG_ROOT);
   }
+  
+  void enableDevLogger(String viewId) {
+    logger = new DevLogger(viewId);
+    _SVG_ROOT.onMouseMove.listen((e) => logger.mouseOnContent(e));
+  }
 
   void addWidget(Widget widget) {
 
@@ -70,6 +77,11 @@ class BoxyView {
     // Register widget to the selection manager
     _selectorManager.registerWidget(widget);
     _connectorManager.registerWidget(widget);
+    
+    // logger
+    if (logger != null) {
+      widget.element.onMouseMove.listen((e) => logger.onWidget(widget, e));
+    }
 
   }
 
