@@ -7,6 +7,8 @@ abstract class Widget {
   bool resizable = false;
 
   bool dragable = false;
+  
+  bool connectable = false;
 
   double get x;
 

@@ -19,6 +19,7 @@ void addSquare(BoxyView boxy) {
   RectangleBoxy widget = new RectangleBoxy(10.0, 10.0, 200.0, 200.0);
   widget.dragable = true;
   widget.resizable = true;
+  widget.connectable = true;
   boxy.addWidget(widget);
 
 }
@@ -29,6 +30,7 @@ void addEllipse(BoxyView boxy) {
   EllipseBoxy widget = new EllipseBoxy(100.0, 100.0, 30.0, 30.0);
   widget.dragable = true;
   widget.resizable = true;
+  widget.connectable = true;
   boxy.addWidget(widget);
   
 }

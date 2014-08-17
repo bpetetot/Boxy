@@ -30,7 +30,7 @@ class Connector {
 
     // listen widget updates
     widget.onTranslate.listen((dx, dy) => translate(dx, dy));
-    widget.onUpdate.listen(() =>update());
+    widget.onUpdate.listen(() => update());
 
   }
 

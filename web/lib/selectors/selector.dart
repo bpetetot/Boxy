@@ -7,21 +7,32 @@ class Selector {
   // Group
   final GElement _selectorGroup = new GElement();
 
-  // Rubber & grips
+  // Rubber
   Rubber _rubber;
+
+  // Grips
   GripResize _gripResize;
   GripRotate _gripRotate;
+  GripConnector _gripConnector;
 
   Selector(this.selectedWidget) {
     _selectorGroup.attributes['id'] = "selectors-1";
 
+    // Add rubber
     if (selectedWidget.dragable) {
       _rubber = new Rubber('rubber-selector', selectedWidget);
     }
+
+    // Add resize grip
     if (selectedWidget.resizable) {
       _gripResize = new GripResize('resize-grip', selectedWidget);
     }
     //_gripRotate = new GripRotate('rotate-grip', selectedWidget);
+
+    // Add connector grip
+    if (selectedWidget.connectable) {
+      _gripConnector = new GripConnector("connect-grip", _rubber, selectedWidget);
+    }
   }
 
   void attach(SvgElement selectorsView) {
@@ -33,6 +44,9 @@ class Selector {
     if (selectedWidget.resizable) {
       _gripResize.attach(_selectorGroup);
     }
+    if (selectedWidget.connectable) {
+      _gripConnector.attach(_selectorGroup);
+    }
   }
 
   void dettach() {
@@ -42,7 +56,18 @@ class Selector {
     if (selectedWidget.resizable) {
       _gripResize.dettach();
     }
+    if (selectedWidget.connectable) {
+      _gripConnector.dettach();
+    }
     _selectorGroup.remove();
+  }
+
+  void show() {
+    _selectorGroup.attributes["display"] = "visible";
+  }
+
+  void hide() {
+    _selectorGroup.attributes["display"] = "none";
   }
 
 }
@@ -86,6 +111,15 @@ abstract class SelectorItem extends Widget {
     }
     // Remove element
     super.dettach();
+  }
+
+  // ---- Show / Hide
+  void show() {
+    element.attributes["display"] = "visible";
+  }
+
+  void hide() {
+    element.attributes["display"] = "none";
   }
 
   // ---- Draggable Methods

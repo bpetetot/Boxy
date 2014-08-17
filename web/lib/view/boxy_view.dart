@@ -55,7 +55,7 @@ class BoxyView {
     _selectorManager = new SelectorManager(_SELECTORS_GROUP);
 
     // Create the Connector Manager
-    _connectorManager = new ConnectorManager(_SELECTORS_GROUP);
+    //_connectorManager = new ConnectorManager(_SELECTORS_GROUP);
 
     querySelector(viewId).append(_SVG_ROOT);
   }
@@ -76,7 +76,7 @@ class BoxyView {
 
     // Register widget to the selection manager
     _selectorManager.registerWidget(widget);
-    _connectorManager.registerWidget(widget);
+    //_connectorManager.registerWidget(widget);
 
     // logger
     if (logger != null) {
