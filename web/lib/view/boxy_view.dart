@@ -14,9 +14,13 @@ class BoxyView {
 
   DevLogger logger;
 
+  // Managers
   SelectorManager _selectorManager;
   ConnectorManager _connectorManager;
-
+  
+  // TODO Current User Mode (select mode, connection mode)
+  
+  
   int nbLayers = 0;
 
   final Map<String, SvgElement> _LAYERS = {};

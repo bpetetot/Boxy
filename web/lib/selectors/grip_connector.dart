@@ -34,7 +34,7 @@ class GripConnector extends SelectorItem {
     super.attach(parent);
 
     // Subscribe to selected widgets events
-    listeners.add(rubber.element.onMouseOver.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
+    listeners.add(rubber.element.onMouseMove.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
     listeners.add(rubber.element.onMouseOut.listen((e) => element.attributes["display"] = "hide"));
     
     this.subscribedEvents.add(selectedWidget.onTranslate.listen((x, y) => translate(x, y)));
@@ -45,25 +45,25 @@ class GripConnector extends SelectorItem {
   void setConnectorPosition(double x, double y) {
     element.attributes["display"] = "visible";
     
-    num thresholdX = selectedWidget.width * 0.2;
-    num thresholdY = selectedWidget.height * 0.2;
+    num thresholdX = selectedWidget.width * 0.1;
+    num thresholdY = selectedWidget.height * 0.1;
     
     // Set X
     if (x >= selectedWidget.x + selectedWidget.width - thresholdX) {
-      this.x = selectedWidget.x + selectedWidget.width;
+      this.x = selectedWidget.x + selectedWidget.width - ray;
     } else if (x <= selectedWidget.x + thresholdX) {
-      this.x = selectedWidget.x;
+      this.x = selectedWidget.x - ray;
     } else {
-      this.x = x;
+      this.x = x - ray;
     }
 
     // Set Y
     if (y >= selectedWidget.y + selectedWidget.height - thresholdY) {
-      this.y = selectedWidget.y + selectedWidget.height;
+      this.y = selectedWidget.y + selectedWidget.height - ray;
     } else if (y <= selectedWidget.y + thresholdY) {
-      this.y = selectedWidget.y;
+      this.y = selectedWidget.y - ray;
     } else {
-      this.y = y;
+      this.y = y - ray;
     }
   }
 
