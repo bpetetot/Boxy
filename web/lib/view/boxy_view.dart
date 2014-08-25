@@ -11,6 +11,8 @@ class BoxyView {
   final GElement _LAYERS_GROUP = new GElement();
 
   final GElement _SELECTORS_GROUP = new GElement();
+  
+  final GElement _CONNECTOR_GROUP = new GElement();
 
   DevLogger logger;
 
@@ -18,7 +20,8 @@ class BoxyView {
   SelectorManager _selectorManager;
   ConnectorManager _connectorManager;
   
-  // TODO Current User Mode (select mode, connection mode)
+  // User Mode (select mode, connection mode)
+  UserMode userMode = UserMode.SELECT_MODE;
   
   
   int nbLayers = 0;
@@ -47,6 +50,7 @@ class BoxyView {
     _SVG_CONTENT.append(_LAYERS_GROUP);
     _SELECTORS_GROUP.attributes['id'] = "selectors-group";
     _SVG_CONTENT.append(_SELECTORS_GROUP);
+    _SVG_CONTENT.append(_CONNECTOR_GROUP);
 
     // Create the default layer
     addLayer('layer-1');
@@ -56,10 +60,10 @@ class BoxyView {
     _SVG_ROOT.append(_SVG_CONTENT);
 
     // Create the Selection Manager
-    _selectorManager = new SelectorManager(_SELECTORS_GROUP);
+    _selectorManager = new SelectorManager(this);
 
     // Create the Connector Manager
-    //_connectorManager = new ConnectorManager(_SELECTORS_GROUP);
+    _connectorManager = new ConnectorManager(this);
 
     querySelector(viewId).append(_SVG_ROOT);
   }
@@ -80,7 +84,7 @@ class BoxyView {
 
     // Register widget to the selection manager
     _selectorManager.registerWidget(widget);
-    //_connectorManager.registerWidget(widget);
+    _connectorManager.registerWidget(widget);
 
     // logger
     if (logger != null) {

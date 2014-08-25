@@ -12,6 +12,10 @@ void main() {
   
   querySelector("#addEllipse").onClick.listen((e) => addEllipse(boxy));
   
+  querySelector("#selectMode").onClick.listen((e) => boxy.userMode = UserMode.SELECT_MODE);
+  
+  querySelector("#connectMode").onClick.listen((e) => boxy.userMode = UserMode.CONNECT_MODE);
+  
 }
 
 void addSquare(BoxyView boxy) {

@@ -7,7 +7,7 @@ abstract class Widget {
   bool resizable = false;
 
   bool dragable = false;
-  
+
   bool connectable = false;
 
   double get x;
@@ -50,11 +50,11 @@ abstract class Widget {
 
   // ---- Widget listeners
   List<SubscribeEventBoxy> subscribedEvents = [];
-  
+
   TranslateListener onTranslate = new TranslateListener();
   ResizeListener onResize = new ResizeListener();
   UpdateListener onUpdate = new UpdateListener();
-  
+
   // ---- Widget transforms
 
   void translate(num dx, num dy) {
@@ -66,15 +66,21 @@ abstract class Widget {
 
   void scale(num dx, num dy) {
     // scale the widget
-    num ratioX = ((width + dx) / width);
-    num ratioY = ((height + dy) / height);
+    num ratioX = (width + dx) / width;
+    num ratioY = (height + dy) / height;
+    
+    if (ratioX < 0) ratioX = 0.02 ;
+    if (ratioY < 0) ratioY = 0.02 ;
 
     num translateX = -x * (ratioX - 1);
     num translateY = -y * (ratioY - 1);
+
+
     element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
 
     // notify listeners
     onResize.notify(dx, dy);
+
   }
 
   void rotate(num angle) {

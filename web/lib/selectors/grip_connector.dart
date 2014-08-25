@@ -1,23 +1,21 @@
 part of boxy;
 
-class GripConnector extends SelectorItem {
+class GripConnector extends Widget {
 
   static final double _SIZE = 5.0;
   static final double _LINE_WIDTH = 1.0;
   static final String _COLOR = "green";
-  static final String _CURSOR = "nwse-resize";
-  
-  Rubber rubber;
+  static final String _CURSOR = "crosshair";
 
-  GripConnector(String selectorName, Rubber rubber, Widget selectedWidget) : super(selectedWidget) {
+  Widget selectedWidget;
 
-    this.selectorName = selectorName;
-    this.rubber = rubber;
+  List listeners = [];
+
+  GripConnector() {
 
     element = new CircleElement();
 
     element.attributes = {
-      "id": selectorName,
       "cx": "0",
       "cy": "0",
       "r": "${_SIZE / 2}",
@@ -32,22 +30,30 @@ class GripConnector extends SelectorItem {
 
   void attach(SvgElement parent) {
     super.attach(parent);
+  }
 
-    // Subscribe to selected widgets events
-    listeners.add(rubber.element.onMouseMove.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
-    listeners.add(rubber.element.onMouseOut.listen((e) => element.attributes["display"] = "hide"));
+  void attachWidget(Widget selectedWidget) {
+    this.selectedWidget = selectedWidget;
     
-    this.subscribedEvents.add(selectedWidget.onTranslate.listen((x, y) => translate(x, y)));
-    this.subscribedEvents.add(selectedWidget.onResize.listen((x, y) => translate(x, y)));
-    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
+    // Subscribe to selected widgets events
+    listeners.add(selectedWidget.element.onMouseMove.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
+    listeners.add(selectedWidget.element.onMouseOut.listen((e) => element.attributes["display"] = "hide"));
+
+  }
+
+  void dettachCurrentWidget() {
+    // Remove listeners
+    listeners.forEach((l) => l.cancel());
+    // remove the widget
+    this.selectedWidget = null;
   }
 
   void setConnectorPosition(double x, double y) {
     element.attributes["display"] = "visible";
-    
+
     num thresholdX = selectedWidget.width * 0.1;
     num thresholdY = selectedWidget.height * 0.1;
-    
+
     // Set X
     if (x >= selectedWidget.x + selectedWidget.width - thresholdX) {
       this.x = selectedWidget.x + selectedWidget.width - ray;
@@ -88,13 +94,5 @@ class GripConnector extends SelectorItem {
   set width(double width) => element.attributes["r"] = "${_SIZE / 2}";
 
   set height(double height) => element.attributes["r"] = "${_SIZE / 2}";
-
-  void onDrag(num dx, num dy) {
-    // DO NOTHING
-  }
-
-  void onDragEnd(num dx, num dy) {
-    // DO NOTHING
-  }
 
 }

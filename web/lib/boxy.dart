@@ -5,6 +5,7 @@ import 'dart:svg';
 import 'dart:math' hide Point ;
 
 part './view/boxy_view.dart';
+part './view/user_modes.dart';
 
 part './utils/math_utils.dart';
 part './utils/svg_utils.dart';
@@ -21,7 +22,6 @@ part './selectors/grip_rotate.dart';
 part './selectors/grip_connector.dart';
 
 part './connectors/connector_manager.dart';
-part './connectors/connector.dart';
 part './connectors/connector_path.dart';
 
 part './widgets/widget.dart';

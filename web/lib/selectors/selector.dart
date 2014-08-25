@@ -13,7 +13,6 @@ class Selector {
   // Grips
   GripResize _gripResize;
   GripRotate _gripRotate;
-  GripConnector _gripConnector;
 
   Selector(this.selectedWidget) {
     _selectorGroup.attributes['id'] = "selectors-1";
@@ -29,10 +28,6 @@ class Selector {
     }
     //_gripRotate = new GripRotate('rotate-grip', selectedWidget);
 
-    // Add connector grip
-    if (selectedWidget.connectable) {
-      _gripConnector = new GripConnector("connect-grip", _rubber, selectedWidget);
-    }
   }
 
   void attach(SvgElement selectorsView) {
@@ -44,9 +39,6 @@ class Selector {
     if (selectedWidget.resizable) {
       _gripResize.attach(_selectorGroup);
     }
-    if (selectedWidget.connectable) {
-      _gripConnector.attach(_selectorGroup);
-    }
   }
 
   void dettach() {
@@ -55,9 +47,6 @@ class Selector {
     }
     if (selectedWidget.resizable) {
       _gripResize.dettach();
-    }
-    if (selectedWidget.connectable) {
-      _gripConnector.dettach();
     }
     _selectorGroup.remove();
   }

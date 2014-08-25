@@ -2,14 +2,19 @@ part of boxy;
 
 class SelectorManager {
 
-  final GElement _SELECTORS_VIEW;
+  final BoxyView _BOXY;
+
+  UserMode userMode;
 
   final List<Widget> _watchedWidgets = [];
 
   final Map<Widget, Selector> _widgetSelectors = {};
 
-  SelectorManager(this._SELECTORS_VIEW) {
-    _SELECTORS_VIEW.attributes['id'] = "selectors-group";
+  SelectorManager(this._BOXY) {
+    // Selector group ID
+    _BOXY._SELECTORS_GROUP.attributes['id'] = "selectors-group";
+    // Unselect when the user click out of any widget
+    _BOXY._SVG_ROOT.onClick.listen((e) => _unselectAll(e.offset.x, e.offset.y));
   }
 
   void registerWidget(Widget widget) {
@@ -31,14 +36,29 @@ class SelectorManager {
   }
 
   void _selectWidget(Widget selectedWidget) {
-    if (!_widgetSelectors.containsKey(selectedWidget)) {
-      // create selectors
-      Selector selector = new Selector(selectedWidget);
-      selector.attach(_SELECTORS_VIEW);
-      _widgetSelectors[selectedWidget] = selector;
-    } else {
-      _widgetSelectors[selectedWidget].show();
+    if (_BOXY.userMode == UserMode.SELECT_MODE) {
+      if (!_widgetSelectors.containsKey(selectedWidget)) {
+        // create selectors
+        Selector selector = new Selector(selectedWidget);
+        selector.attach(_BOXY._SELECTORS_GROUP);
+        _widgetSelectors[selectedWidget] = selector;
+      } else {
+        _widgetSelectors[selectedWidget].show();
+      }
     }
+  }
+  
+  void _unselectAll(num x, num y) {
+    
+    bool intersect = false;
+    for (Widget w in _watchedWidgets) {
+      intersect = intersect || SvgUtils.intersect(w, x, y);
+    }
+    
+    if (!intersect) {
+      _unselectWidgets();
+    }
+
   }
 
 
