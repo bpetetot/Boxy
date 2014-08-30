@@ -3,7 +3,7 @@ part of boxy;
 class EllipseBoxy extends Widget {
 
   EllipseBoxy(double cx, double cy, double rx, double ry) {
-    element = new SvgElement.tag("ellipse");
+    element = new svg.SvgElement.tag("ellipse");
     element.attributes = {
       "cx": "$cx",
       "cy": "$cy",

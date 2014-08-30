@@ -5,7 +5,7 @@ class Selector {
   final Widget selectedWidget;
 
   // Group
-  final GElement _selectorGroup = new GElement();
+  final svg.GElement _selectorGroup = new svg.GElement();
 
   // Rubber
   Rubber _rubber;
@@ -30,7 +30,7 @@ class Selector {
 
   }
 
-  void attach(SvgElement selectorsView) {
+  void attach(svg.SvgElement selectorsView) {
     selectorsView.append(_selectorGroup);
 
     if (selectedWidget.dragable) {
@@ -77,7 +77,7 @@ abstract class SelectorItem extends Widget {
 
   // ---- Override widget methods
 
-  void attach(SvgElement parent) {
+  void attach(svg.SvgElement parent) {
     super.attach(parent);
 
     // Add listeners used to drag

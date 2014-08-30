@@ -11,7 +11,7 @@ class GripResize extends SelectorItem {
 
     this.selectorName = selectorName;
 
-    element = new CircleElement();
+    element = new svg.CircleElement();
 
     element.attributes = {
       "id": selectorName,
@@ -27,7 +27,7 @@ class GripResize extends SelectorItem {
 
   }
 
-  void attach(SvgElement parent) {
+  void attach(svg.SvgElement parent) {
     super.attach(parent);
 
     // Rubber listener

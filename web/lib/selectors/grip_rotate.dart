@@ -10,7 +10,7 @@ class GripRotate extends SelectorItem {
 
     this.selectorName = selectorName;
 
-    element = new CircleElement();
+    element = new svg.CircleElement();
 
     element.attributes = {
       "id": selectorName,
@@ -25,7 +25,7 @@ class GripRotate extends SelectorItem {
 
   }
 
-  void attach(SvgElement parent) {
+  void attach(svg.SvgElement parent) {
     super.attach(parent);
 
     // Subscribe to selected widgets events
@@ -47,10 +47,10 @@ class GripRotate extends SelectorItem {
     num cx = selectedWidget.cx;
     num cy = selectedWidget.cy;
 
-    num angleRad = acos((x + dx - cx) / circleRay);
+    num angleRad = math.acos((x + dx - cx) / circleRay);
 
-    num circleX = cx + circleRay * cos(angleRad);
-    num circleY = cy + circleRay * cos(angleRad);
+    num circleX = cx + circleRay * math.cos(angleRad);
+    num circleY = cy + circleRay * math.cos(angleRad);
 
     num angle = 90 - MathUtils.radToDeg(angleRad);
 

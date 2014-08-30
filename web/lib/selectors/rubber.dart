@@ -10,7 +10,7 @@ class Rubber extends SelectorItem {
 
     this.selectorName = selectorName;
 
-    element = new RectElement();
+    element = new svg.RectElement();
 
     element.attributes = {
       "id": selectorName,
@@ -30,7 +30,7 @@ class Rubber extends SelectorItem {
 
   }
 
-  void attach(SvgElement parent) {
+  void attach(svg.SvgElement parent) {
     super.attach(parent);
 
     // Rubber listener

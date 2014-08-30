@@ -1,8 +1,8 @@
 library boxy;
 
 import 'dart:html';
-import 'dart:svg';
-import 'dart:math' hide Point ;
+import 'dart:svg' as svg;
+import 'dart:math' as math;
 import 'dart:async';
 
 part './view/boxy_view.dart';

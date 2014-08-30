@@ -2,17 +2,17 @@ part of boxy;
 
 class BoxyView {
 
-  final SvgSvgElement _SVG_ROOT = new SvgSvgElement();
+  final svg.SvgSvgElement _SVG_ROOT = new svg.SvgSvgElement();
 
-  final SvgSvgElement _SVG_BACKGROUND = new SvgSvgElement();
+  final svg.SvgSvgElement _SVG_BACKGROUND = new svg.SvgSvgElement();
 
-  final SvgSvgElement _SVG_CONTENT = new SvgSvgElement();
+  final svg.SvgSvgElement _SVG_CONTENT = new svg.SvgSvgElement();
 
-  final GElement _LAYERS_GROUP = new GElement();
+  final svg.GElement _LAYERS_GROUP = new svg.GElement();
 
-  final GElement _SELECTORS_GROUP = new GElement();
+  final svg.GElement _SELECTORS_GROUP = new svg.GElement();
   
-  final GElement _CONNECTOR_GROUP = new GElement();
+  final svg.GElement _CONNECTOR_GROUP = new svg.GElement();
 
   DevLogger logger;
 
@@ -26,7 +26,7 @@ class BoxyView {
   
   int nbLayers = 0;
 
-  final Map<String, SvgElement> _LAYERS = {};
+  final Map<String, svg.SvgElement> _LAYERS = {};
 
   final Map<String, String> _VIEW_ATTRS = {
     'width': '100%',
@@ -108,7 +108,7 @@ class BoxyView {
   void addLayer(String layer) {
     if (!_LAYERS.containsKey(layer)) {
       nbLayers++;
-      GElement layerEl = new GElement();
+      svg.GElement layerEl = new svg.GElement();
       layerEl.attributes['id'] = layer;
       // Add to the DOM
       _LAYERS_GROUP.append(layerEl);
@@ -139,7 +139,7 @@ class BoxyView {
     final num viewWidth = _SVG_BACKGROUND.ownerSvgElement.client.width;
     final num viewHeight = _SVG_BACKGROUND.ownerSvgElement.client.height;
 
-    RectElement borders = new RectElement();
+    svg.RectElement borders = new svg.RectElement();
     borders.attributes = {
       "x": "0",
       "y": "0",
@@ -152,7 +152,7 @@ class BoxyView {
     _SVG_BACKGROUND.append(borders);
 
     for (int i = step; i < viewHeight; i = i + step) {
-      LineElement line = new LineElement();
+      svg.LineElement line = new svg.LineElement();
       line.attributes = {
         "x1": "0",
         "y1": "${i}",
@@ -165,7 +165,7 @@ class BoxyView {
     }
 
     for (int i = step; i < viewWidth; i = i + step) {
-      LineElement line = new LineElement();
+      svg.LineElement line = new svg.LineElement();
       line.attributes = {
         "x1": "${i}",
         "y1": "0",

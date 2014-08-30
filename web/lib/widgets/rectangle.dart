@@ -4,7 +4,7 @@ class RectangleBoxy extends Widget {
 
   RectangleBoxy(double x, double y, double width, double height) {
 
-    element = new SvgElement.tag("rect");
+    element = new svg.SvgElement.tag("rect");
     element.attributes = {
       "x": "$x",
       "y": "$y",

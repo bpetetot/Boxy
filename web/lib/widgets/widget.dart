@@ -2,7 +2,7 @@ part of boxy;
 
 abstract class Widget {
 
-  SvgElement element;
+  svg.SvgElement element;
 
   bool resizable = false;
 
@@ -32,13 +32,13 @@ abstract class Widget {
 
   // ---- SVG Methods
 
-  SvgSvgElement get parentSvg => element.ownerSvgElement;
+  svg.SvgSvgElement get parentSvg => element.ownerSvgElement;
 
-  SvgSvgElement get rootSvg => parentSvg.ownerSvgElement;
+  svg.SvgSvgElement get rootSvg => parentSvg.ownerSvgElement;
 
   // ---- Attach / Dettach
 
-  void attach(SvgElement parent) {
+  void attach(svg.SvgElement parent) {
     parent.append(element);
   }
 

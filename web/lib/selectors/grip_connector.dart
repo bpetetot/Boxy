@@ -11,7 +11,7 @@ class GripConnector extends Widget {
 
   GripConnector() {
 
-    element = new CircleElement();
+    element = new svg.CircleElement();
 
     element.attributes = {
       "cx": "0",
@@ -26,7 +26,7 @@ class GripConnector extends Widget {
 
   }
 
-  void attach(SvgElement parent) {
+  void attach(svg.SvgElement parent) {
     super.attach(parent);
   }
 

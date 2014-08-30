@@ -9,7 +9,7 @@ class ConnectorPath extends Widget {
   Widget endWidget;
 
   ConnectorPath(BoxyView boxy, this.startWidget, num startX, num startY) {
-    element = new LineElement();
+    element = new svg.LineElement();
 
     element.attributes = {
       "x1": "$startX",
