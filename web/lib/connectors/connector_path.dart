@@ -2,11 +2,11 @@ part of boxy;
 
 class ConnectorPath extends Widget {
 
-  List listeners = [];
-
   Widget startWidget;
   num lastX1, lastX2, lastY1, lastY2;
   Widget endWidget;
+
+  var subscribeMoveStart;
 
   ConnectorPath(BoxyView boxy, this.startWidget, num startX, num startY) {
     element = new svg.LineElement();
@@ -22,12 +22,12 @@ class ConnectorPath extends Widget {
 
     boxy._SVG_CONTENT.append(element);
 
-    listeners.add(boxy._SVG_ROOT.onMouseMove.listen((e) => updateLine(e)));
+    subscribeMoveStart = boxy._SVG_ROOT.onMouseMove.listen((e) => updateLine(e));
 
     this.lastX1 = startX;
     this.lastY1 = startY;
-    subscribedEvents.add(this.startWidget.onTranslate.listen((e) => moveStartConnector(e.dx, e.dy)));
-    subscribedEvents.add(this.startWidget.onResize.listen((e) => moveStartConnector(e.dx, e.dy)));
+    subscribedEvents.add(this.startWidget.onTranslate.listen((e) => onTranslateMoveStartConnector(e.dx, e.dy)));
+    subscribedEvents.add(this.startWidget.onResize.listen((e) => onResizeMoveStartConnector(e.dx, e.dy)));
     subscribedEvents.add(this.startWidget.onUpdate.listen((e) => updateCoordinates()));
 
     this.dragable = true;
@@ -42,38 +42,47 @@ class ConnectorPath extends Widget {
     this.lastY2 = endY;
 
     this.endWidget = endWidget;
-    this.endWidget.onTranslate.listen((e) => moveEndConnector(e.dx, e.dy));
-    this.endWidget.onUpdate.listen((e) => updateCoordinates());
+    subscribedEvents.add(this.endWidget.onTranslate.listen((e) => onTranslateMoveEndConnector(e.dx, e.dy)));
+    subscribedEvents.add(this.endWidget.onResize.listen((e) => onResizeMoveEndConnector(e.dx, e.dy)));
+    subscribedEvents.add(this.endWidget.onUpdate.listen((e) => updateCoordinates()));
 
     // Remove listeners
-    for (var listener in listeners) {
-      listener.cancel();
-    }
+    subscribeMoveStart.cancel();
   }
 
-  void moveStartConnector(num dx, num dy) {
+  void onTranslateMoveStartConnector(num dx, num dy) {
+    num newX = this.lastX1 + dx;
+    num newY = this.lastY1 + dy;
+    x = newX;
+    y = newY;
+  }
+
+  void onTranslateMoveEndConnector(num dx, num dy) {
+    num newX = this.lastX2 + dx;
+    num newY = this.lastY2 + dy;
+    x2 = newX;
+    y2 = newY;
+  }
+
+  void onResizeMoveStartConnector(num dx, num dy) {
     num newX = this.lastX1 + dx;
     num newY = this.lastY1 + dy;
 
     if (newX < startWidget.x) {
       x = startWidget.x;
-    } else if (newX > startWidget.x + startWidget.width) {
-      x = startWidget.x + startWidget.width;
     } else {
       x = newX;
     }
 
     if (newY < startWidget.y) {
       y = startWidget.y;
-    } else if (newY > startWidget.y + startWidget.height) {
-      y = startWidget.y + startWidget.height;
     } else {
       y = newY;
     }
 
   }
 
-  void moveEndConnector(num dx, num dy) {
+  void onResizeMoveEndConnector(num dx, num dy) {
     num newX = this.lastX2 + dx;
     num newY = this.lastY2 + dy;
 
