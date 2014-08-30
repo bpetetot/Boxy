@@ -3,6 +3,7 @@ library boxy;
 import 'dart:html';
 import 'dart:svg';
 import 'dart:math' hide Point ;
+import 'dart:async';
 
 part './view/boxy_view.dart';
 part './view/user_modes.dart';
@@ -11,8 +12,7 @@ part './utils/math_utils.dart';
 part './utils/svg_utils.dart';
 part './utils/loggers.dart';
 
-part './events/event_manager.dart';
-part './events/events_boxy.dart';
+part './events/events_stream.dart';
 
 part './selectors/selector_manager.dart';
 part './selectors/selector.dart';

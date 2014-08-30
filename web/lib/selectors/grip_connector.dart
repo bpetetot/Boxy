@@ -9,8 +9,6 @@ class GripConnector extends Widget {
 
   Widget selectedWidget;
 
-  List listeners = [];
-
   GripConnector() {
 
     element = new CircleElement();
@@ -36,14 +34,12 @@ class GripConnector extends Widget {
     this.selectedWidget = selectedWidget;
     
     // Subscribe to selected widgets events
-    listeners.add(selectedWidget.element.onMouseMove.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
-    listeners.add(selectedWidget.element.onMouseOut.listen((e) => element.attributes["display"] = "hide"));
+    subscribedEvents.add(selectedWidget.element.onMouseMove.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
+    subscribedEvents.add(selectedWidget.element.onMouseOut.listen((e) => element.attributes["display"] = "hide"));
 
   }
 
   void dettachCurrentWidget() {
-    // Remove listeners
-    listeners.forEach((l) => l.cancel());
     // remove the widget
     this.selectedWidget = null;
   }

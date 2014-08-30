@@ -73,8 +73,6 @@ abstract class SelectorItem extends Widget {
   var _lastMouse;
   var _lastDelta;
 
-  List listeners = [];
-
   SelectorItem(this.selectedWidget);
 
   // ---- Override widget methods
@@ -83,21 +81,17 @@ abstract class SelectorItem extends Widget {
     super.attach(parent);
 
     // Add listeners used to drag
-    listeners.add(element.onMouseDown.listen((event) => beginDrag(selectorName, event)));
-    listeners.add(element.onMouseMove.listen((event) => drag(selectorName, event)));
-    listeners.add(element.onMouseUp.listen((event) => endDrag(selectorName, event)));
-    listeners.add(rootSvg.onMouseMove.listen((event) => drag(selectorName, event)));
-    listeners.add(rootSvg.onMouseUp.listen((event) => endDrag(selectorName, event)));
+    subscribedEvents.add(element.onMouseDown.listen((event) => beginDrag(selectorName, event)));
+    subscribedEvents.add(element.onMouseMove.listen((event) => drag(selectorName, event)));
+    subscribedEvents.add(element.onMouseUp.listen((event) => endDrag(selectorName, event)));
+    subscribedEvents.add(rootSvg.onMouseMove.listen((event) => drag(selectorName, event)));
+    subscribedEvents.add(rootSvg.onMouseUp.listen((event) => endDrag(selectorName, event)));
 
     _lastMouse = parentSvg.createSvgPoint();
     _lastDelta = parentSvg.createSvgPoint();
   }
 
   void dettach() {
-    // Remove listeners
-    for (var listener in listeners) {
-      listener.cancel();
-    }
     // Remove element
     super.dettach();
   }

@@ -49,11 +49,15 @@ abstract class Widget {
   }
 
   // ---- Widget listeners
-  List<SubscribeEventBoxy> subscribedEvents = [];
+  List subscribedEvents = [];
+  
+  static final EventBoxyStreamProvider<TranslateEvent> translateEvent = new EventBoxyStreamProvider<TranslateEvent>('translate');
+  static final EventBoxyStreamProvider<ResizeEvent> resizeEvent = new EventBoxyStreamProvider<ResizeEvent>('resize');
+  static final EventBoxyStreamProvider<UpdateEvent> updateEvent = new EventBoxyStreamProvider<UpdateEvent>('update');
 
-  TranslateListener onTranslate = new TranslateListener();
-  ResizeListener onResize = new ResizeListener();
-  UpdateListener onUpdate = new UpdateListener();
+  EventBoxyStream<TranslateEvent> get onTranslate => translateEvent.forWidget(this);
+  EventBoxyStream<ResizeEvent> get onResize => resizeEvent.forWidget(this);
+  EventBoxyStream<UpdateEvent> get onUpdate => updateEvent.forWidget(this);
 
   // ---- Widget transforms
 
@@ -61,16 +65,16 @@ abstract class Widget {
     // translate the widget
     element.attributes["transform"] = "translate(${dx}, ${dy})";
     // notify listeners
-    onTranslate.notify(dx, dy);
+    onTranslate.add(new TranslateEvent(dx, dy));
   }
 
   void scale(num dx, num dy) {
     // scale the widget
     num ratioX = (width + dx) / width;
     num ratioY = (height + dy) / height;
-    
-    if (ratioX < 0) ratioX = 0.02 ;
-    if (ratioY < 0) ratioY = 0.02 ;
+
+    if (ratioX < 0) ratioX = 0.02;
+    if (ratioY < 0) ratioY = 0.02;
 
     num translateX = -x * (ratioX - 1);
     num translateY = -y * (ratioY - 1);
@@ -79,7 +83,7 @@ abstract class Widget {
     element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
 
     // notify listeners
-    onResize.notify(dx, dy);
+    onResize.add(new ResizeEvent(dx, dy));
 
   }
 
@@ -110,7 +114,7 @@ abstract class Widget {
     y = position.y;
 
     // notify listeners
-    onUpdate.notify();
+    onUpdate.add(new UpdateEvent());
 
     element.attributes["transform"] = "";
   }

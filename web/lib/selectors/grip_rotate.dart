@@ -29,9 +29,9 @@ class GripRotate extends SelectorItem {
     super.attach(parent);
 
     // Subscribe to selected widgets events
-    this.subscribedEvents.add(selectedWidget.onResize.listen((x, y) => scale(x, y)));
-    this.subscribedEvents.add(selectedWidget.onTranslate.listen((x, y) => translate(x, y)));
-    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
+    subscribedEvents.add(selectedWidget.onResize.listen((e) => scale(e.dx, e.dy)));
+    subscribedEvents.add(selectedWidget.onTranslate.listen((e) => translate(e.dx, e.dy)));
+    subscribedEvents.add(selectedWidget.onUpdate.listen((e) => updateCoordinates()));
 
   }
 

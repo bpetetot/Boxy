@@ -34,11 +34,11 @@ class Rubber extends SelectorItem {
     super.attach(parent);
 
     // Rubber listener
-    this.onTranslate.listen((x,y) => selectedWidget.translate(x, y));
+    subscribedEvents.add(this.onTranslate.listen((e) => selectedWidget.translate(e.dx, e.dy)));
     
     // Subscribe to selected widgets events
-    this.subscribedEvents.add(selectedWidget.onResize.listen((x,y) => scale(x, y)));
-    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
+    subscribedEvents.add(selectedWidget.onResize.listen((e) => scale(e.dx, e.dy)));
+    subscribedEvents.add(selectedWidget.onUpdate.listen((e) => updateCoordinates()));
 
   }
 

@@ -26,9 +26,9 @@ class ConnectorPath extends Widget {
 
     this.lastX1 = startX;
     this.lastY1 = startY;
-    this.subscribedEvents.add(this.startWidget.onTranslate.listen((dx, dy) => moveStartConnector(dx, dy)));
-    this.subscribedEvents.add(this.startWidget.onResize.listen((dx, dy) => moveStartConnector(dx, dy)));
-    this.subscribedEvents.add(this.startWidget.onUpdate.listen(() => updateCoordinates()));
+    subscribedEvents.add(this.startWidget.onTranslate.listen((e) => moveStartConnector(e.dx, e.dy)));
+    subscribedEvents.add(this.startWidget.onResize.listen((e) => moveStartConnector(e.dx, e.dy)));
+    subscribedEvents.add(this.startWidget.onUpdate.listen((e) => updateCoordinates()));
 
     this.dragable = true;
 
@@ -42,8 +42,8 @@ class ConnectorPath extends Widget {
     this.lastY2 = endY;
 
     this.endWidget = endWidget;
-    this.subscribedEvents.add(this.endWidget.onTranslate.listen((dx, dy) => moveEndConnector(dx, dy)));
-    this.subscribedEvents.add(this.endWidget.onUpdate.listen(() => updateCoordinates()));
+    this.endWidget.onTranslate.listen((e) => moveEndConnector(e.dx, e.dy));
+    this.endWidget.onUpdate.listen((e) => updateCoordinates());
 
     // Remove listeners
     for (var listener in listeners) {

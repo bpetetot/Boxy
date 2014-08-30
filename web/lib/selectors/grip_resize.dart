@@ -31,11 +31,11 @@ class GripResize extends SelectorItem {
     super.attach(parent);
 
     // Rubber listener
-    this.onResize.listen((x,y) => selectedWidget.scale(x, y));
+    subscribedEvents.add(this.onResize.listen((e) => selectedWidget.scale(e.dx, e.dy)));
 
     // Subscribe to selected widgets events
-    this.subscribedEvents.add(selectedWidget.onTranslate.listen((x,y) => translate(x, y)));
-    this.subscribedEvents.add(selectedWidget.onUpdate.listen(() => updateCoordinates()));
+    subscribedEvents.add(selectedWidget.onTranslate.listen((e) => translate(e.dx, e.dy)));
+    subscribedEvents.add(selectedWidget.onUpdate.listen((e) => updateCoordinates()));
 
   }
 
@@ -43,7 +43,7 @@ class GripResize extends SelectorItem {
     // Manage selector elements
     this.translate(dx, dy);
     // Notify listeners
-    onResize.notify(dx, dy);
+    onResize.add(new ResizeEvent(dx, dy));
   }
 
   void onDragEnd(num dx, num dy) {
