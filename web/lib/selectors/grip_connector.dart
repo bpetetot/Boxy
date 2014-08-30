@@ -4,7 +4,7 @@ class GripConnector extends Widget {
 
   static final double _SIZE = 5.0;
   static final double _LINE_WIDTH = 1.0;
-  static final String _COLOR = "green";
+  static final String _COLOR = "blue";
   static final String _CURSOR = "crosshair";
 
   Widget selectedWidget;
@@ -34,8 +34,8 @@ class GripConnector extends Widget {
     this.selectedWidget = selectedWidget;
     
     // Subscribe to selected widgets events
-    subscribedEvents.add(selectedWidget.element.onMouseMove.listen((e) => setConnectorPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
-    subscribedEvents.add(selectedWidget.element.onMouseOut.listen((e) => element.attributes["display"] = "hide"));
+    subscribedEvents.add(selectedWidget.element.onMouseMove.listen((e) => setGripPosition(e.offset.x + 0.0, e.offset.y + 0.0)));
+    subscribedEvents.add(selectedWidget.element.onMouseOut.listen((e) => this.show()));
 
   }
 
@@ -44,8 +44,8 @@ class GripConnector extends Widget {
     this.selectedWidget = null;
   }
 
-  void setConnectorPosition(double x, double y) {
-    element.attributes["display"] = "visible";
+  void setGripPosition(double x, double y) {
+    this.show();
 
     num thresholdX = selectedWidget.width * 0.1;
     num thresholdY = selectedWidget.height * 0.1;

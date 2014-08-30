@@ -58,6 +58,15 @@ abstract class Widget {
   EventBoxyStream<TranslateEvent> get onTranslate => translateEvent.forWidget(this);
   EventBoxyStream<ResizeEvent> get onResize => resizeEvent.forWidget(this);
   EventBoxyStream<UpdateEvent> get onUpdate => updateEvent.forWidget(this);
+  
+  // ---- Widget display
+  void hide() {
+    element.attributes["display"] = "none";
+  }
+  
+  void show() {
+    element.attributes["display"] = "visible";
+  }
 
   // ---- Widget transforms
 
