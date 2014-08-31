@@ -22,8 +22,9 @@ class GripResize extends SelectorItem {
       "fill": "red"
     };
 
-    this.x = selectedWidget.x + selectedWidget.width + 3;
-    this.y = selectedWidget.y + selectedWidget.height + 3;
+    svg.Rect widgetBBox = SvgUtils.getBBox(selectedWidget.element);
+    this.x = widgetBBox.x + widgetBBox.width + 3;
+    this.y = widgetBBox.y + widgetBBox.height + 3;
 
   }
 
@@ -39,16 +40,50 @@ class GripResize extends SelectorItem {
 
   }
 
-  void onDrag(num dx, num dy) {
-    // Manage selector elements
-    this.translate(dx, dy);
-    // Notify listeners
-    onResize.add(new ResizeEvent(dx, dy));
+  num lastDx = 0;
+  num lastDy = 0;
+
+  void onDrag(SelectorDragEvent e) {
+
+    // Manage grip moving when it's out of widget top and left border
+    var topLeftPt = SvgUtils.coordinateTransform(selectedWidget.x, selectedWidget.y, selectedWidget.element);
+    var bottomRightPt = SvgUtils.coordinateTransform(selectedWidget.x + selectedWidget.width, selectedWidget.y + selectedWidget.height, selectedWidget.element);
+    num width = bottomRightPt.x - topLeftPt.x;
+    num height = bottomRightPt.y - topLeftPt.y;
+
+    //print("${e.mouse.offset.x} : ${topLeftPt.x} : ${selectedWidget.x}");
+
+    if (e.mouse.offset.x > selectedWidget.x + 10 && e.mouse.offset.y > selectedWidget.y + 10) {
+
+      num newDx = e.dx;
+      num newDy = e.dy;
+
+      if (e.dx < lastDx && width <= 10) {
+        newDx = lastDx;
+      }
+      if (e.dy < lastDy && height <= 10) {
+        newDy = lastDy;
+      }
+
+      this.translate(newDx, newDy);
+      onResize.add(new ResizeEvent(newDx, newDy));
+
+      this.lastDx = newDx;
+      this.lastDy = newDy;
+    }
+
   }
 
-  void onDragEnd(num dx, num dy) {
+  void onDragEnd(SelectorDragEvent e) {
     selectedWidget.updateCoordinates();
   }
+
+  void updateCoordinates() {
+    super.updateCoordinates();
+    this.lastDx = 0;
+    this.lastDy = 0;
+  }
+
 
   double get ray => double.parse(element.attributes["r"]);
 

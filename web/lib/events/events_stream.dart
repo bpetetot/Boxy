@@ -77,6 +77,26 @@ class ResizeEvent extends BoxyEvent {
 
 }
 
+class SelectWidgetEvent extends BoxyEvent {
+
+  Widget w;
+
+  SelectWidgetEvent (Widget w) : super('select') {
+    this.w = w;
+  }
+
+}
+
+class UnselectWidgetEvent extends BoxyEvent {
+
+  Widget w;
+
+  UnselectWidgetEvent (Widget w) : super('unselect') {
+    this.w = w;
+  }
+
+}
+
 class UpdateEvent extends BoxyEvent {
 
   UpdateEvent () : super('update') {

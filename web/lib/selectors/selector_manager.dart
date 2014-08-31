@@ -41,20 +41,21 @@ class SelectorManager {
         // create selectors
         Selector selector = new Selector(selectedWidget);
         selector.attach(_BOXY._SELECTORS_GROUP);
+        selector.show();
         _widgetSelectors[selectedWidget] = selector;
       } else {
         _widgetSelectors[selectedWidget].show();
       }
     }
   }
-  
+
   void _unselectAll(num x, num y) {
-    
+
     bool intersect = false;
     for (Widget w in _watchedWidgets) {
-      intersect = intersect || SvgUtils.intersect(w, x, y);
+      intersect = intersect || SvgUtils.intersect(x, y, w.element);
     }
-    
+
     if (!intersect) {
       _unselectWidgets();
     }

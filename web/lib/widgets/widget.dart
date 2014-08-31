@@ -54,10 +54,14 @@ abstract class Widget {
   static final EventBoxyStreamProvider<TranslateEvent> translateEvent = new EventBoxyStreamProvider<TranslateEvent>('translate');
   static final EventBoxyStreamProvider<ResizeEvent> resizeEvent = new EventBoxyStreamProvider<ResizeEvent>('resize');
   static final EventBoxyStreamProvider<UpdateEvent> updateEvent = new EventBoxyStreamProvider<UpdateEvent>('update');
+  static final EventBoxyStreamProvider<SelectWidgetEvent> selectEvent = new EventBoxyStreamProvider<SelectWidgetEvent>('select');
+  static final EventBoxyStreamProvider<UnselectWidgetEvent> unselectEvent = new EventBoxyStreamProvider<UnselectWidgetEvent>('unselect');
 
   EventBoxyStream<TranslateEvent> get onTranslate => translateEvent.forWidget(this);
   EventBoxyStream<ResizeEvent> get onResize => resizeEvent.forWidget(this);
   EventBoxyStream<UpdateEvent> get onUpdate => updateEvent.forWidget(this);
+  EventBoxyStream<SelectWidgetEvent> get onSelect => selectEvent.forWidget(this);
+  EventBoxyStream<UnselectWidgetEvent> get onUnselect => unselectEvent.forWidget(this);
   
   // ---- Widget display
   void hide() {
@@ -88,7 +92,6 @@ abstract class Widget {
     num translateX = -x * (ratioX - 1);
     num translateY = -y * (ratioY - 1);
 
-
     element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
 
     // notify listeners
@@ -107,15 +110,8 @@ abstract class Widget {
 
   void updateCoordinates() {
 
-    var position = parentSvg.createSvgPoint();
-    position.x = x;
-    position.y = y;
-    position = SvgUtils.coordinateTransform(position, element);
-
-    var position2 = parentSvg.createSvgPoint();
-    position2.x = x + width;
-    position2.y = y + height;
-    position2 = SvgUtils.coordinateTransform(position2, element);
+    var position = SvgUtils.coordinateTransform(x, y, element);
+    var position2 = SvgUtils.coordinateTransform(x + width, y + height, element);
 
     width = (position2.x - position.x).abs();
     height = (position2.y - position.y).abs();

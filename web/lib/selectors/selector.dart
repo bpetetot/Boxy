@@ -53,10 +53,12 @@ class Selector {
 
   void show() {
     _selectorGroup.attributes["display"] = "visible";
+    selectedWidget.onSelect.add(new SelectWidgetEvent(selectedWidget));
   }
 
   void hide() {
     _selectorGroup.attributes["display"] = "none";
+    selectedWidget.onUnselect.add(new UnselectWidgetEvent(selectedWidget));
   }
 
 }
@@ -82,8 +84,6 @@ abstract class SelectorItem extends Widget {
 
     // Add listeners used to drag
     subscribedEvents.add(element.onMouseDown.listen((event) => beginDrag(selectorName, event)));
-    subscribedEvents.add(element.onMouseMove.listen((event) => drag(selectorName, event)));
-    subscribedEvents.add(element.onMouseUp.listen((event) => endDrag(selectorName, event)));
     subscribedEvents.add(rootSvg.onMouseMove.listen((event) => drag(selectorName, event)));
     subscribedEvents.add(rootSvg.onMouseUp.listen((event) => endDrag(selectorName, event)));
 
@@ -107,9 +107,9 @@ abstract class SelectorItem extends Widget {
 
   // ---- Draggable Methods
 
-  void onDrag(num dx, num dy);
+  void onDrag(SelectorDragEvent e);
 
-  void onDragEnd(num dx, num dy);
+  void onDragEnd(SelectorDragEvent e);
 
   void beginDrag(String selectorName, MouseEvent e) {
     currentSelector = selectorName;
@@ -131,7 +131,7 @@ abstract class SelectorItem extends Widget {
       pt.x = e.offset.x - _lastMouse.x + _lastDelta.x;
       pt.y = e.offset.y - _lastMouse.y + _lastDelta.y;
 
-      onDrag(pt.x, pt.y);
+      onDrag(new SelectorDragEvent(e, pt.x, pt.y));
 
       _lastDelta = pt;
 
@@ -144,10 +144,18 @@ abstract class SelectorItem extends Widget {
   void endDrag(String selectorName, Event e) {
     if (selectorName == currentSelector) {
       _dragged = false;
-      onDragEnd(_lastDelta.x, _lastDelta.y);
+      onDragEnd(new SelectorDragEvent(e, _lastDelta.x, _lastDelta.y));
     }
   }
 
+}
 
-
+class SelectorDragEvent {
+ 
+  MouseEvent mouse;
+  num dx;
+  num dy;
+  
+  SelectorDragEvent(this.mouse, this.dx, this.dy);
+  
 }

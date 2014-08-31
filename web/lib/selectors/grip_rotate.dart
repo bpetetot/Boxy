@@ -35,7 +35,7 @@ class GripRotate extends SelectorItem {
 
   }
 
-  void onDrag(num dx, num dy) {
+  void onDrag(SelectorDragEvent e) {
     // compute degree
     num circleRay;
     if (selectedWidget.width > selectedWidget.height) {
@@ -47,7 +47,7 @@ class GripRotate extends SelectorItem {
     num cx = selectedWidget.cx;
     num cy = selectedWidget.cy;
 
-    num angleRad = math.acos((x + dx - cx) / circleRay);
+    num angleRad = math.acos((x + e.dx - cx) / circleRay);
 
     num circleX = cx + circleRay * math.cos(angleRad);
     num circleY = cy + circleRay * math.cos(angleRad);
@@ -61,7 +61,7 @@ class GripRotate extends SelectorItem {
     //selector.selectedWidget.rotate(rotationAngle);
   }
 
-  void onDragEnd(num dx, num dy) {
+  void onDragEnd(SelectorDragEvent e) {
     //selector.updateSelectorsCoordinates();
     //selector.selectedWidget.updateCoordinates();
     //element.attributes["transform"] = "";

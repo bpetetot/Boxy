@@ -23,10 +23,11 @@ class Rubber extends SelectorItem {
       "shape-rendering": "auto"
     };
 
-    x = selectedWidget.x - 3;
-    y = selectedWidget.y - 3;
-    width = selectedWidget.width + 6;
-    height = selectedWidget.height + 6;
+    svg.Rect widgetBBox = SvgUtils.getBBox(selectedWidget.element);
+    x = widgetBBox.x - 3;
+    y = widgetBBox.y - 3;
+    width = widgetBBox.width + 6;
+    height = widgetBBox.height + 6;
 
   }
 
@@ -35,18 +36,18 @@ class Rubber extends SelectorItem {
 
     // Rubber listener
     subscribedEvents.add(this.onTranslate.listen((e) => selectedWidget.translate(e.dx, e.dy)));
-    
+
     // Subscribe to selected widgets events
     subscribedEvents.add(selectedWidget.onResize.listen((e) => scale(e.dx, e.dy)));
     subscribedEvents.add(selectedWidget.onUpdate.listen((e) => updateCoordinates()));
 
   }
 
-  void onDrag(num dx, num dy) {
-    this.translate(dx, dy);
+  void onDrag(SelectorDragEvent e) {
+    this.translate(e.dx, e.dy);
   }
 
-  void onDragEnd(num dx, num dy) {
+  void onDragEnd(SelectorDragEvent e) {
     selectedWidget.updateCoordinates();
   }
 

@@ -38,10 +38,7 @@ class DevLogger {
 
     if (widgetEvent != null) {
 
-      var pagePt = widget.parentSvg.createSvgPoint();
-      pagePt.x = widget.x;
-      pagePt.y = widget.y;
-      pagePt = SvgUtils.coordinateTransform(pagePt, widget.element);
+      var pagePt = SvgUtils.coordinateTransform(widget.x, widget.y, widget.element);
 
       info += "=> (${pagePt.x},${pagePt.y})";
 
