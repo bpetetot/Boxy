@@ -1,12 +1,12 @@
 part of boxy;
 
-class Rubber extends SelectorItem {
+class MultiRubber extends SelectorItem {
 
   static final double _LINE_WIDTH = 1.5;
-  static final String _COLOR = "blue";
+  static final String _COLOR = "green";
   static final String _CURSOR = "move";
-  
-  Rubber(String selectorName, Widget selectedWidget) : super([selectedWidget]) {
+
+  MultiRubber(String selectorName, List<Widget> selectedWidgets) : super(selectedWidgets) {
 
     this.selectorName = selectorName;
 
@@ -23,30 +23,33 @@ class Rubber extends SelectorItem {
       "shape-rendering": "auto"
     };
 
-    svg.Rect widgetBBox = SvgUtils.getBBox(widget.element);
+    updateCoordinates();
+  }
+
+  void attach(svg.SvgElement parent, int order) {
+    super.attach(parent, 0);
+    widgets.forEach((w) => w.onTranslate.listen((e) => translate(e.dx, e.dy)));
+  }
+
+  void onDrag(SelectorDragEvent e) {
+    widgets.forEach((w) => w.translate(e.dx, e.dy));
+  }
+
+  void onDragEnd(SelectorDragEvent e) {
+    widgets.forEach((w) => w.updateCoordinates());
+    updateCoordinates();
+  }
+
+  void updateCoordinates() {
+
+    svg.Rect widgetBBox = SvgUtils.getBBoxElements(widgets.map((w) => w.element).toList());
     x = widgetBBox.x - 3;
     y = widgetBBox.y - 3;
     width = widgetBBox.width + 6;
     height = widgetBBox.height + 6;
 
-  }
-
-  void attach(svg.SvgElement parent, int order) {
-    super.attach(parent, 0);
-
-    // Subscribe to selected widgets events
-    subscribedEvents.add(widget.onTranslate.listen((e) => translate(e.dx, e.dy)));
-    subscribedEvents.add(widget.onResize.listen((e) => scale(e.dx, e.dy)));
-    subscribedEvents.add(widget.onUpdate.listen((e) => updateCoordinates()));
-
-  }
-
-  void onDrag(SelectorDragEvent e) {
-    widget.translate(e.dx, e.dy);
-  }
-
-  void onDragEnd(SelectorDragEvent e) {
-    widget.updateCoordinates();
+    onUpdate.add(new UpdateEvent());
+    element.attributes["transform"] = "";
   }
 
   double get x => double.parse(element.attributes["x"]);

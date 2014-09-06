@@ -109,7 +109,7 @@ class MultiSelector extends Widget {
     if (_enabled) {
       scale(_lastDelta.x, _lastDelta.y);
       updateCoordinates();
-
+      
       onSelectBox.add(new SelectBoxEvent(includedWidgets()));
       hide();
       _dragged = false;

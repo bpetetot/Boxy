@@ -78,4 +78,29 @@ class SvgUtils {
     return r;
   }
 
+  static svg.Rect getBBoxElements(List<svg.SvgElement> elements) {
+    svg.Rect r = null;
+
+    for (svg.SvgElement e in elements) {
+      svg.Rect ebb = getBBox(e);
+      if (r == null) {
+        r = ebb;
+      }
+      if (ebb.x < r.x) {
+        r.x = ebb.x;
+      }
+      if (ebb.y < r.y) {
+        r.y = ebb.y;
+      }
+      if (ebb.x + ebb.width > r.x + r.width) {
+        r.width = ebb.x + ebb.width - r.x;
+      }
+      if (ebb.y + ebb.height > r.y + r.height) {
+        r.height = ebb.y + ebb.height - r.y;
+      }
+    }
+
+    return r;
+  }
+
 }

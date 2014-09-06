@@ -7,7 +7,7 @@ class GripResize extends SelectorItem {
   static final String _COLOR = "red";
   static final String _CURSOR = "nwse-resize";
 
-  GripResize(String selectorName, Widget selectedWidget) : super(selectedWidget) {
+  GripResize(String selectorName, Widget selectedWidget) : super([selectedWidget]) {
 
     this.selectorName = selectorName;
 
@@ -22,7 +22,7 @@ class GripResize extends SelectorItem {
       "fill": "red"
     };
 
-    svg.Rect widgetBBox = SvgUtils.getBBox(selectedWidget.element);
+    svg.Rect widgetBBox = SvgUtils.getBBox(widget.element);
     this.x = widgetBBox.x + widgetBBox.width + 3;
     this.y = widgetBBox.y + widgetBBox.height + 3;
 
@@ -31,12 +31,10 @@ class GripResize extends SelectorItem {
   void attach(svg.SvgElement parent, int order) {
     super.attach(parent, 0);
 
-    // Rubber listener
-    subscribedEvents.add(this.onResize.listen((e) => selectedWidget.scale(e.dx, e.dy)));
-
     // Subscribe to selected widgets events
-    subscribedEvents.add(selectedWidget.onTranslate.listen((e) => translate(e.dx, e.dy)));
-    subscribedEvents.add(selectedWidget.onUpdate.listen((e) => updateCoordinates()));
+    subscribedEvents.add(widget.onResize.listen((e) => translate(e.dx, e.dy)));
+    subscribedEvents.add(widget.onTranslate.listen((e) => translate(e.dx, e.dy)));
+    subscribedEvents.add(widget.onUpdate.listen((e) => updateCoordinates()));
 
   }
 
@@ -46,14 +44,12 @@ class GripResize extends SelectorItem {
   void onDrag(SelectorDragEvent e) {
 
     // Manage grip moving when it's out of widget top and left border
-    var topLeftPt = SvgUtils.coordinateTransform(selectedWidget.x, selectedWidget.y, selectedWidget.element);
-    var bottomRightPt = SvgUtils.coordinateTransform(selectedWidget.x + selectedWidget.width, selectedWidget.y + selectedWidget.height, selectedWidget.element);
+    var topLeftPt = SvgUtils.coordinateTransform(widget.x, widget.y, widget.element);
+    var bottomRightPt = SvgUtils.coordinateTransform(widget.x + widget.width, widget.y + widget.height, widget.element);
     num width = bottomRightPt.x - topLeftPt.x;
     num height = bottomRightPt.y - topLeftPt.y;
 
-    //print("${e.mouse.offset.x} : ${topLeftPt.x} : ${selectedWidget.x}");
-
-    if (e.mouse.offset.x > selectedWidget.x + 10 && e.mouse.offset.y > selectedWidget.y + 10) {
+    if (e.mouse.offset.x > widget.x + 10 && e.mouse.offset.y > widget.y + 10) {
 
       num newDx = e.dx;
       num newDy = e.dy;
@@ -65,7 +61,7 @@ class GripResize extends SelectorItem {
         newDy = lastDy;
       }
 
-      this.translate(newDx, newDy);
+      widget.scale(newDx, newDy);
       onResize.add(new ResizeEvent(newDx, newDy));
 
       this.lastDx = newDx;
@@ -75,7 +71,7 @@ class GripResize extends SelectorItem {
   }
 
   void onDragEnd(SelectorDragEvent e) {
-    selectedWidget.updateCoordinates();
+    widget.updateCoordinates();
   }
 
   void updateCoordinates() {

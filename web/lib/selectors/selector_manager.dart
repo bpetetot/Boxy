@@ -13,6 +13,8 @@ class SelectorManager {
   final List<Widget> _selectedWidgets = [];
 
   final MultiSelector _multiSelector = new MultiSelector();
+  
+  MultiRubber _multiRubber;
 
   SelectorManager(this._BOXY) {
     // Selector group ID
@@ -32,7 +34,12 @@ class SelectorManager {
 
   void selectWidgets(List<Widget> selectedWidgets) {
     _unselectWidgets();
-    selectedWidgets.forEach((w) => _onSelectWidget(w));
+    if (selectedWidgets.length > 1) {
+      _multiRubber = new MultiRubber("multi-rubber", selectedWidgets);
+      _multiRubber.attach(_BOXY._SELECTORS_GROUP, 0);
+    } else {
+      selectedWidgets.forEach((w) => _onSelectWidget(w));
+    }
   }
 
   void selectWidget(Widget selectedWidget) {
@@ -43,6 +50,9 @@ class SelectorManager {
   }
 
   void _unselectWidgets() {
+    if(_multiRubber != null) {
+      _multiRubber.dettach();
+    }
     if (_selectedWidgets.isNotEmpty) {
       _selectedWidgets.forEach((w) => _widgetSelectors[w].hide());
       _selectedWidgets.clear();

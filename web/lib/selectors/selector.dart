@@ -73,7 +73,7 @@ abstract class SelectorItem extends Widget {
 
   String selectorName;
 
-  Widget selectedWidget;
+  List<Widget> _selectedWidgets = [];
 
   static String currentSelector;
 
@@ -81,7 +81,13 @@ abstract class SelectorItem extends Widget {
   var _lastMouse;
   var _lastDelta;
 
-  SelectorItem(this.selectedWidget);
+  SelectorItem(this._selectedWidgets);
+  
+  // ---- widget getter
+  
+  Widget get widget => _selectedWidgets.first;
+  
+  List<Widget> get widgets => _selectedWidgets;
 
   // ---- Override widget methods
 

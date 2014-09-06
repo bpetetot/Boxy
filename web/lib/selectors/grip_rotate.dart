@@ -6,7 +6,7 @@ class GripRotate extends SelectorItem {
   static final double _LINE_WIDTH = 0.2;
   static final String _COLOR = "green";
 
-  GripRotate(String selectorName, Widget selectedWidget) : super(selectedWidget) {
+  GripRotate(String selectorName, List<Widget> selectedWidgets) : super(selectedWidgets) {
 
     this.selectorName = selectorName;
 
@@ -20,8 +20,8 @@ class GripRotate extends SelectorItem {
       "fill": "transparent"
     };
 
-    this.x = selectedWidget.x + (selectedWidget.width / 2);
-    this.y = selectedWidget.y - 20;
+    this.x = widget.x + (widget.width / 2);
+    this.y = widget.y - 20;
 
   }
 
@@ -29,23 +29,23 @@ class GripRotate extends SelectorItem {
     super.attach(parent, 0);
 
     // Subscribe to selected widgets events
-    subscribedEvents.add(selectedWidget.onResize.listen((e) => scale(e.dx, e.dy)));
-    subscribedEvents.add(selectedWidget.onTranslate.listen((e) => translate(e.dx, e.dy)));
-    subscribedEvents.add(selectedWidget.onUpdate.listen((e) => updateCoordinates()));
+    subscribedEvents.add(widget.onResize.listen((e) => scale(e.dx, e.dy)));
+    subscribedEvents.add(widget.onTranslate.listen((e) => translate(e.dx, e.dy)));
+    subscribedEvents.add(widget.onUpdate.listen((e) => updateCoordinates()));
 
   }
 
   void onDrag(SelectorDragEvent e) {
     // compute degree
     num circleRay;
-    if (selectedWidget.width > selectedWidget.height) {
-      circleRay = selectedWidget.width / 2;
+    if (widget.width > widget.height) {
+      circleRay = widget.width / 2;
     } else {
-      circleRay = selectedWidget.height / 2;
+      circleRay = widget.height / 2;
     }
 
-    num cx = selectedWidget.cx;
-    num cy = selectedWidget.cy;
+    num cx = widget.cx;
+    num cy = widget.cy;
 
     num angleRad = math.acos((x + e.dx - cx) / circleRay);
 
@@ -54,7 +54,7 @@ class GripRotate extends SelectorItem {
 
     num angle = 90 - MathUtils.radToDeg(angleRad);
 
-    element.attributes["transform"] = "translate(${circleX - selectedWidget.x - (selectedWidget.width / 2)}, ${circleY  - selectedWidget.y - (selectedWidget.height / 2)})";
+    element.attributes["transform"] = "translate(${circleX - widget.x - (widget.width / 2)}, ${circleY  - widget.y - (widget.height / 2)})";
 
     //selector._selectorGroup.attributes["transform"] = "rotate($angle,${cx}, ${cy})";
 
