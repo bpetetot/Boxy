@@ -123,5 +123,9 @@ abstract class Widget {
 
     element.attributes["transform"] = "";
   }
+  
+  String toString() {
+    return "($x, $y) $width $height";
+  }
 
 }

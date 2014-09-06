@@ -6,6 +6,8 @@ class SvgShape extends Widget {
   String umlActor = "M40 20 C40 31.0457 31.0457 40 20 40 C8.9543 40 0 31.0457 0 20 C0 8.9543 8.9543 0 20 0 C31.0457 0 40 8.9543 40 20 ZM20 40 L20 75M20 75 L0 105M20 75 L40 105M2 60 L38 60";
   String umlNode = "M0 0 L12 -20 L112 -20 L112 75 L95 95 L95 0 ZM95 0 L112 -20";
   
+  // TODO Complex shapes with groups
+  
   SvgShape(String name, double x, double y, double width, double height) {
     element = new svg.SvgElement.tag("path");
     element.attributes = {

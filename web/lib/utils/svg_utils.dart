@@ -12,7 +12,15 @@ class SvgUtils {
     point.x = x;
     point.y = y;
 
-    return point.matrixTransform(svgEl.getTransformToElement(element).inverse());
+    var matrix = null;
+    try {
+      matrix = svgEl.getTransformToElement(element).inverse();
+    } on DomException catch (e) {
+      // Matrix not invertable
+      return point;
+    }
+
+    return point.matrixTransform(matrix);
   }
 
   static svg.Point coordinateGlobal2Local(num x, num y, svg.SvgElement element) {
@@ -21,11 +29,25 @@ class SvgUtils {
     var point = svgEl.createSvgPoint();
     point.x = x;
     point.y = y;
-    point = point.matrixTransform(element.ownerSvgElement.getScreenCtm().inverse());
+
+    var matrix = null;
+    try {
+      matrix = element.ownerSvgElement.getScreenCtm().inverse();
+      point = point.matrixTransform(matrix);
+    } on DomException catch (e) {
+      // Matrix not invertable
+    }
 
     return SvgUtils.coordinateTransform(point.x, point.y, element);
   }
 
+
+  static bool intersectElements(svg.SvgElement element1, svg.SvgElement element2) {
+    svg.Rect rect1 = SvgUtils.getBBox(element1);
+    svg.Rect rect2 = SvgUtils.getBBox(element2);
+
+    return !(rect1.x + rect1.width < rect2.x || rect2.x + rect2.width < rect1.x || rect1.y + rect1.height < rect2.y || rect2.y + rect2.height < rect1.y);
+  }
 
   static bool intersect(num x, num y, svg.SvgElement element) {
     Rectangle rect = element.getBoundingClientRect();
@@ -46,7 +68,7 @@ class SvgUtils {
     r.y = topLeft.y;
     r.width = bottomRight.x - topLeft.x;
     r.height = bottomRight.y - topLeft.y;
-    
+
     return r;
   }
 

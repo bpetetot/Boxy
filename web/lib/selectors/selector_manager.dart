@@ -10,32 +10,46 @@ class SelectorManager {
 
   final Map<Widget, Selector> _widgetSelectors = {};
 
+  final List<Widget> _selectedWidgets = [];
+
+  final MultiSelector _multiSelector = new MultiSelector();
+
   SelectorManager(this._BOXY) {
     // Selector group ID
     _BOXY._SELECTORS_GROUP.attributes['id'] = "selectors-group";
-    // Unselect when the user click out of any widget
-    _BOXY._SVG_ROOT.onClick.listen((e) => _unselectAll(e.offset.x, e.offset.y));
+    // Add Multiselector
+    _multiSelector.attachMultiselector(_BOXY._SELECTORS_GROUP, _watchedWidgets);
+    _multiSelector.onSelectBox.listen((e) => selectWidgets(e.selectedWidgets));
   }
 
   void registerWidget(Widget widget) {
     _watchedWidgets.add(widget);
-    widget.element.onMouseDown.listen((e) => _onSelectWidget(widget));
+    
+    widget.onTranslate.listen((e) => _multiSelector.disabled());
+    widget.onResize.listen((e) => _multiSelector.disabled());
+    widget.onUpdate.listen((e) => _multiSelector.enable());
   }
 
-  void _onSelectWidget(Widget selectedWidget) {
+  void selectWidgets(List<Widget> selectedWidgets) {
+    _unselectWidgets();
+    selectedWidgets.forEach((w) => _onSelectWidget(w));
+  }
+
+  void selectWidget(Widget selectedWidget) {
     if (_watchedWidgets.contains(selectedWidget)) {
       _unselectWidgets();
-      _selectWidget(selectedWidget);
+      _onSelectWidget(selectedWidget);
     }
   }
 
   void _unselectWidgets() {
-    if (_widgetSelectors.isNotEmpty) {
-      _widgetSelectors.forEach((w, s) => s.hide());
+    if (_selectedWidgets.isNotEmpty) {
+      _selectedWidgets.forEach((w) => _widgetSelectors[w].hide());
+      _selectedWidgets.clear();
     }
   }
 
-  void _selectWidget(Widget selectedWidget) {
+  void _onSelectWidget(Widget selectedWidget) {
     if (_BOXY.userMode == UserMode.SELECT_MODE) {
       if (!_widgetSelectors.containsKey(selectedWidget)) {
         // create selectors
@@ -46,21 +60,8 @@ class SelectorManager {
       } else {
         _widgetSelectors[selectedWidget].show();
       }
+      _selectedWidgets.add(selectedWidget);
     }
   }
-
-  void _unselectAll(num x, num y) {
-
-    bool intersect = false;
-    for (Widget w in _watchedWidgets) {
-      intersect = intersect || SvgUtils.intersect(x, y, w.element);
-    }
-
-    if (!intersect) {
-      _unselectWidgets();
-    }
-
-  }
-
 
 }

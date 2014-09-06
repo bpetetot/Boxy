@@ -12,8 +12,7 @@ class Selector {
 
   // Grips
   GripResize _gripResize;
-  GripRotate _gripRotate;
-
+  
   Selector(this.selectedWidget) {
     _selectorGroup.attributes['id'] = "selectors-1";
 
@@ -26,7 +25,6 @@ class Selector {
     if (selectedWidget.resizable) {
       _gripResize = new GripResize('resize-grip', selectedWidget);
     }
-    //_gripRotate = new GripRotate('rotate-grip', selectedWidget);
 
   }
 
@@ -52,13 +50,21 @@ class Selector {
   }
 
   void show() {
-    _selectorGroup.attributes["display"] = "visible";
-    selectedWidget.onSelect.add(new SelectWidgetEvent(selectedWidget));
+    if (selectedWidget != null && !isVisible()) {
+      _selectorGroup.attributes["display"] = "visible";
+      selectedWidget.onSelect.add(new SelectWidgetEvent(selectedWidget));
+    }
   }
 
   void hide() {
-    _selectorGroup.attributes["display"] = "none";
-    selectedWidget.onUnselect.add(new UnselectWidgetEvent(selectedWidget));
+    if (selectedWidget != null && isVisible()) {
+      _selectorGroup.attributes["display"] = "none";
+      selectedWidget.onUnselect.add(new UnselectWidgetEvent(selectedWidget));
+    }
+  }
+  
+  bool isVisible() {
+    return _selectorGroup.attributes["display"]  == "visible";
   }
 
 }
@@ -151,11 +157,11 @@ abstract class SelectorItem extends Widget {
 }
 
 class SelectorDragEvent {
- 
+
   MouseEvent mouse;
   num dx;
   num dy;
-  
+
   SelectorDragEvent(this.mouse, this.dx, this.dy);
-  
+
 }

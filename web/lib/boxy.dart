@@ -21,6 +21,7 @@ part './selectors/grip_rubber.dart';
 part './selectors/grip_resize.dart';
 part './selectors/grip_rotate.dart';
 part './selectors/grip_connector.dart';
+part './selectors/multi_selector.dart';
 
 part './connectors/connector_manager.dart';
 part './connectors/connector_path.dart';
