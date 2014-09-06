@@ -24,7 +24,8 @@ class SvgShape extends Widget {
 
   }
 
-  void attach(svg.SvgElement parent) {
+  void attach(svg.SvgElement parent, int order) {
+    this.order = order;
     parent.append(element);
     translate(x, y);
     updateCoordinates();

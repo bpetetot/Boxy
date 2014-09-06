@@ -13,7 +13,7 @@ class ConnectorManager {
 
   ConnectorManager(this._BOXY) {
     // Add connector grip
-    this._gripConnector.attach(_BOXY._CONNECTOR_GROUP);
+    this._gripConnector.attach(_BOXY._CONNECTOR_GROUP, 0);
     this._gripConnector.element.onClick.listen((e) => onConnect(e.offset.x, e.offset.y));
   }
 

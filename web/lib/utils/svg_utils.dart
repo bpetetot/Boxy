@@ -41,6 +41,12 @@ class SvgUtils {
     return SvgUtils.coordinateTransform(point.x, point.y, element);
   }
 
+  static bool includeElement(svg.SvgElement parent, svg.SvgElement checked) {
+    svg.Rect rect1 = SvgUtils.getBBox(parent);
+    svg.Rect rect2 = SvgUtils.getBBox(checked);
+
+    return (rect1.x < rect2.x && rect2.x + rect2.width < rect1.x + rect1.width && rect1.y < rect2.y && rect2.y + rect2.height < rect1.y + rect1.height);
+  }
 
   static bool intersectElements(svg.SvgElement element1, svg.SvgElement element2) {
     svg.Rect rect1 = SvgUtils.getBBox(element1);

@@ -9,6 +9,8 @@ abstract class Widget {
   bool dragable = false;
 
   bool connectable = false;
+  
+  int order = 0;
 
   double get x;
 
@@ -38,7 +40,8 @@ abstract class Widget {
 
   // ---- Attach / Dettach
 
-  void attach(svg.SvgElement parent) {
+  void attach(svg.SvgElement parent, int order) {
+    this.order = order;
     parent.append(element);
   }
 

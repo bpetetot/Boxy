@@ -32,10 +32,10 @@ class Selector {
     selectorsView.append(_selectorGroup);
 
     if (selectedWidget.dragable) {
-      _rubber.attach(_selectorGroup);
+      _rubber.attach(_selectorGroup, 0);
     }
     if (selectedWidget.resizable) {
-      _gripResize.attach(_selectorGroup);
+      _gripResize.attach(_selectorGroup, 0);
     }
   }
 
@@ -85,8 +85,8 @@ abstract class SelectorItem extends Widget {
 
   // ---- Override widget methods
 
-  void attach(svg.SvgElement parent) {
-    super.attach(parent);
+  void attach(svg.SvgElement parent, int order) {
+    super.attach(parent, 0);
 
     // Add listeners used to drag
     subscribedEvents.add(element.onMouseDown.listen((event) => beginDrag(selectorName, event)));

@@ -31,8 +31,8 @@ class Rubber extends SelectorItem {
 
   }
 
-  void attach(svg.SvgElement parent) {
-    super.attach(parent);
+  void attach(svg.SvgElement parent, int order) {
+    super.attach(parent, 0);
 
     // Rubber listener
     subscribedEvents.add(this.onTranslate.listen((e) => selectedWidget.translate(e.dx, e.dy)));

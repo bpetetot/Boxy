@@ -25,8 +25,8 @@ class GripRotate extends SelectorItem {
 
   }
 
-  void attach(svg.SvgElement parent) {
-    super.attach(parent);
+  void attach(svg.SvgElement parent, int order) {
+    super.attach(parent, 0);
 
     // Subscribe to selected widgets events
     subscribedEvents.add(selectedWidget.onResize.listen((e) => scale(e.dx, e.dy)));

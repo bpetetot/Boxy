@@ -13,6 +13,8 @@ class BoxyView {
   final svg.GElement _SELECTORS_GROUP = new svg.GElement();
   
   final svg.GElement _CONNECTOR_GROUP = new svg.GElement();
+  
+  int orderIndex = 0;
 
   DevLogger logger;
 
@@ -77,7 +79,7 @@ class BoxyView {
 
     // attach the widget to the first layer
     if (_LAYERS.isNotEmpty) {
-      widget.attach(_LAYERS.values.first);
+      widget.attach(_LAYERS.values.first, orderIndex++);
     } else {
       window.console.error("No layers defined for the svg view.");
     }
@@ -98,7 +100,7 @@ class BoxyView {
 
     // attach the widget to the given layer
     if (_LAYERS.containsKey(layer)) {
-      widget.attach(_LAYERS[layer]);
+      widget.attach(_LAYERS[layer], orderIndex++);
     } else {
       window.console.error("Layer '$layer' not found, you must create it before adding widgets.");
     }

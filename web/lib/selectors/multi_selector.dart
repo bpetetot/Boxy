@@ -37,7 +37,7 @@ class MultiSelector extends Widget {
   // ---- Override widget methods
 
   void attachMultiselector(svg.SvgElement svgView, List<Widget> watchedWidgets) {
-    super.attach(svgView);
+    super.attach(svgView, 0);
     this._watchedWidgets = watchedWidgets;
 
     _lastMouse = element.ownerSvgElement.createSvgPoint();
@@ -109,7 +109,8 @@ class MultiSelector extends Widget {
     if (_enabled) {
       scale(_lastDelta.x, _lastDelta.y);
       updateCoordinates();
-      onSelectBox.add(new SelectBoxEvent(intersectedWidgets()));
+
+      onSelectBox.add(new SelectBoxEvent(includedWidgets()));
       hide();
       _dragged = false;
     }
@@ -135,8 +136,16 @@ class MultiSelector extends Widget {
 
   set height(double height) => element.attributes["height"] = "$height";
 
-  List<Widget> intersectedWidgets() {
-    return _watchedWidgets.where((w) => SvgUtils.intersectElements(w.element, element)).toList();
+  List<Widget> includedWidgets() {
+    if (width == 1 && height == 1) {
+      var result = _watchedWidgets.where((w) => SvgUtils.intersectElements(element, w.element));
+      if (result.isNotEmpty) {
+        return [result.reduce((w1, w2) => w1.order > w2.order ? w1 : w2)];
+      } else {
+        return [];
+      }
+    }
+    return _watchedWidgets.where((w) => SvgUtils.includeElement(element, w.element)).toList();
   }
 
 }

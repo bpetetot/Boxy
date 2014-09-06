@@ -28,8 +28,8 @@ class GripResize extends SelectorItem {
 
   }
 
-  void attach(svg.SvgElement parent) {
-    super.attach(parent);
+  void attach(svg.SvgElement parent, int order) {
+    super.attach(parent, 0);
 
     // Rubber listener
     subscribedEvents.add(this.onResize.listen((e) => selectedWidget.scale(e.dx, e.dy)));

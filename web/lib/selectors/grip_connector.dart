@@ -26,8 +26,8 @@ class GripConnector extends Widget {
 
   }
 
-  void attach(svg.SvgElement parent) {
-    super.attach(parent);
+  void attach(svg.SvgElement parent, int order) {
+    super.attach(parent, 0);
   }
 
   void attachWidget(Widget selectedWidget) {
