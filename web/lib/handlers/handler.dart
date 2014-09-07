@@ -17,18 +17,23 @@ class WidgetHandlers {
 
   void addHandler(WidgetHandler handler) => _handlers.add(handler);
 
-  void attach(svg.SvgElement selectorsView) {
+  void attach(svg.SvgElement handlersView) {
     if (!attached) {
-      selectorsView.append(_handlerGroup);
+      handlersView.append(_handlerGroup);
       _handlers.forEach((h) => h.attach(_handlerGroup, 0));
       attached = true;
     }
+  }
+
+  void enable() {
     if (!isVisible()) {
       _handlerGroup.attributes["display"] = "visible";
-      //_widget.onSelect.add(new SelectWidgetEvent(_widget));
-    } else {
+    }
+  }
+
+  void disable() {
+    if (isVisible()) {
       _handlerGroup.attributes["display"] = "none";
-      //_widget.onUnselect.add(new UnselectWidgetEvent(_widget));
     }
   }
 

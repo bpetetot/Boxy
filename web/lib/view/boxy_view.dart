@@ -11,9 +11,9 @@ class BoxyView {
   final svg.GElement _LAYERS_GROUP = new svg.GElement();
 
   final svg.GElement _HANDLERS_GROUP = new svg.GElement();
-  
+
   final svg.GElement _CONNECTOR_GROUP = new svg.GElement();
-  
+
   int orderIndex = 0;
 
   DevLogger logger;
@@ -21,11 +21,14 @@ class BoxyView {
   // Managers
   HandlersManager _selectorManager;
   ConnectorManager _connectorManager;
-  
+
   // User Mode (select mode, connection mode)
-  UserMode userMode = UserMode.HANDLE_MODE;
-  
-  
+  UserMode _userMode;
+
+  // View events
+  static final EventBoxyStreamProvider<ChangeUserModeEvent> changeUserModeEvent = new EventBoxyStreamProvider<ChangeUserModeEvent>('usermode');
+  EventBoxyStream<ChangeUserModeEvent> get onChangeUserMode => changeUserModeEvent.forView(this);
+
   int nbLayers = 0;
 
   final Map<String, svg.SvgElement> _LAYERS = {};
@@ -68,6 +71,9 @@ class BoxyView {
     _connectorManager = new ConnectorManager(this);
 
     querySelector(viewId).append(_SVG_ROOT);
+
+    // Set default usermode
+    this.changeUserMode(UserMode.HANDLE_MODE);
   }
 
   void enableDevLogger(String viewId) {
@@ -132,7 +138,14 @@ class BoxyView {
       window.console.error("Layer '$layer' doesn't exist.");
     }
   }
-  
+
+  void changeUserMode(UserMode mode) {
+    if (mode != null) {
+      _userMode = mode;
+      onChangeUserMode.add(new ChangeUserModeEvent(mode));
+    }
+  }
+
   void displayGrid() {
 
     final int step = 20;

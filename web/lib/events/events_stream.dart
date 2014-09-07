@@ -5,17 +5,29 @@ class EventBoxyStreamProvider<T extends BoxyEvent> {
 
   final String _eventType;
 
-  final Map<Widget, EventBoxyStream> _streams = {};
+  final Map<Widget, EventBoxyStream> _widgetStreams = {};
+
+  final Map<BoxyView, EventBoxyStream> _viewStreams = {};
 
   EventBoxyStreamProvider(this._eventType);
 
   EventBoxyStream<T> forWidget(Widget w) {
-    return _streams.putIfAbsent(w, () => new EventBoxyStream(_eventType, w, onCancel: _onCancel(w)));
+    return _widgetStreams.putIfAbsent(w, () => new EventBoxyStream(_eventType, onCancel: _onCancelWidgetStreams(w)));
   }
 
-  _onCancel(Widget w) {
-    if (_streams.containsKey(w)) {
-      _streams.remove(w);
+  EventBoxyStream<T> forView(BoxyView b) {
+    return _viewStreams.putIfAbsent(b, () => new EventBoxyStream(_eventType, onCancel: _onCancelViewStreams(b)));
+  }
+
+  _onCancelWidgetStreams(Widget w) {
+    if (_widgetStreams.containsKey(w)) {
+      _widgetStreams.remove(w);
+    }
+  }
+
+  _onCancelViewStreams(BoxyView b) {
+    if (_viewStreams.containsKey(b)) {
+      _viewStreams.remove(b);
     }
   }
 
@@ -35,9 +47,7 @@ class EventBoxyStream<T extends BoxyEvent> extends Stream<T> implements BoxyStre
 
   String _type;
 
-  Widget _widget;
-
-  EventBoxyStream(this._type, this._widget, {onCancel}) {
+  EventBoxyStream(this._type, {onCancel}) {
     _streamController = new StreamController.broadcast(onCancel: onCancel, sync: true);
   }
 
@@ -100,6 +110,24 @@ class UnselectWidgetEvent extends BoxyEvent {
 class UpdateEvent extends BoxyEvent {
 
   UpdateEvent() : super('update') {
+  }
+
+}
+
+class SelectBoxEvent extends BoxyEvent {
+
+  List<Widget> selectedWidgets;
+
+  SelectBoxEvent(this.selectedWidgets) : super('selectbox') {
+  }
+
+}
+
+class ChangeUserModeEvent extends BoxyEvent {
+
+  UserMode mode;
+
+  ChangeUserModeEvent(this.mode) : super('usermode') {
   }
 
 }

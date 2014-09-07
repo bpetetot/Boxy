@@ -55,16 +55,15 @@ abstract class Widget {
 
   WidgetHandlers get widgetHandlers => _handlers;
 
+  bool draggable = false;
+
   void addMoveHandler() {
-    _handlers.addHandler(new MoveHandler.forWidget('rubber-selector', this));
+    draggable = true;
   }
 
   void addResizeHandler() {
+    this.addMoveHandler();
     _handlers.addHandler(new ResizeHandler('resize-grip', this));
-  }
-
-  void toggleHandlers(svg.SvgElement handlersView) {
-    _handlers.attach(handlersView);
   }
 
   // ---- Widget listeners

@@ -14,16 +14,15 @@ void main() {
 
   querySelector("#addShape").onClick.listen((e) => addShape(boxy));
 
-  querySelector("#selectMode").onClick.listen((e) => boxy.userMode = UserMode.HANDLE_MODE);
+  querySelector("#selectMode").onClick.listen((e) => boxy.changeUserMode(UserMode.HANDLE_MODE));
 
-  querySelector("#connectMode").onClick.listen((e) => boxy.userMode = UserMode.CONNECT_MODE);
+  querySelector("#connectMode").onClick.listen((e) => boxy.changeUserMode(UserMode.CONNECT_MODE));
 
 }
 
 void addSquare(BoxyView boxy) {
 
-  RectangleBoxy widget = new RectangleBoxy(10.0, 10.0, 200.0, 200.0);
-  widget.addMoveHandler();
+  RectangleBoxy widget = new RectangleBoxy(100.0, 100.0, 40.0, 40.0);
   widget.addResizeHandler();
   widget.connectable = true;
   boxy.addWidget(widget);
@@ -36,7 +35,6 @@ void addSquare(BoxyView boxy) {
 void addEllipse(BoxyView boxy) {
 
   EllipseBoxy widget = new EllipseBoxy(100.0, 100.0, 30.0, 30.0);
-  widget.addMoveHandler();
   widget.addResizeHandler();
   widget.connectable = true;
   boxy.addWidget(widget);
@@ -45,8 +43,7 @@ void addEllipse(BoxyView boxy) {
 
 void addShape(BoxyView boxy) {
 
-  SvgShape widget = new SvgShape("actor", 100.0, 100.0, 100.0, 300.0);
-  widget.addMoveHandler();
+  SvgShape widget = new SvgShape("actor", 100.0, 100.0, 40.0, 40.0);
   widget.addResizeHandler();
   widget.connectable = true;
   boxy.addWidget(widget);

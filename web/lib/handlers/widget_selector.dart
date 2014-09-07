@@ -1,6 +1,6 @@
 part of boxy;
 
-class MultiSelector extends Widget {
+class WidgetSelector extends Widget {
 
   static final double _LINE_WIDTH = 1.0;
   static final String _COLOR = "red";
@@ -15,7 +15,7 @@ class MultiSelector extends Widget {
 
   bool _enabled = true;
 
-  MultiSelector() {
+  WidgetSelector() {
     element = new svg.RectElement();
     element.attributes = {
       "x": "0",
@@ -37,12 +37,12 @@ class MultiSelector extends Widget {
   var _lastDelta;
 
   // ---- Multi move handler
-  void displayHandler(List<Widget> widgets, svg.GElement view) {
+  void showMoveHandler(List<Widget> widgets, svg.GElement view) {
     _multiMoveHandler = new MoveHandler.forWidgets("multi-rubber", widgets);
     _multiMoveHandler.attach(view, 0);
   }
 
-  void hideHandler() {
+  void hideMoveHandler() {
     if (_multiMoveHandler != null) {
       _multiMoveHandler.dettach();
       _multiMoveHandler = null;
@@ -52,13 +52,13 @@ class MultiSelector extends Widget {
 
   // ---- Override widget methods
 
-  void attachMultiselector(svg.SvgElement svgView, List<Widget> watchedWidgets) {
+  void attachSelector(svg.SvgElement svgView, List<Widget> watchedWidgets) {
     super.attach(svgView, 0);
     this._watchedWidgets = watchedWidgets;
 
     _lastMouse = element.ownerSvgElement.createSvgPoint();
     _lastDelta = element.ownerSvgElement.createSvgPoint();
-    element.ownerSvgElement.ownerSvgElement.onMouseDown.listen((event) => beginDrag(event));
+    element.ownerSvgElement.ownerSvgElement.onMouseDown.listen((event) => _beginDrag(event));
   }
 
   void enable() {
@@ -74,19 +74,17 @@ class MultiSelector extends Widget {
   // ---- Show / Hide
   void show() {
     super.show();
-
-    subscribedEvents.add(element.ownerSvgElement.ownerSvgElement.onMouseMove.listen((event) => drag(event)));
-    subscribedEvents.add(element.ownerSvgElement.ownerSvgElement.onMouseUp.listen((event) => endDrag(event)));
+    subscribedEvents.add(element.ownerSvgElement.ownerSvgElement.onMouseMove.listen((event) => _drag(event)));
+    subscribedEvents.add(element.ownerSvgElement.ownerSvgElement.onMouseUp.listen((event) => _endDrag(event)));
   }
 
   void hide() {
     super.hide();
-
     subscribedEvents.forEach((e) => e.cancel());
   }
 
   // ---- Draggable Methods
-  void beginDrag(MouseEvent e) {
+  void _beginDrag(MouseEvent e) {
     if (_enabled) {
       show();
 
@@ -107,7 +105,7 @@ class MultiSelector extends Widget {
     }
   }
 
-  void drag(MouseEvent e) {
+  void _drag(MouseEvent e) {
     if (_dragged && _enabled) {
       // Compute the delta coordinate to apply from the original coordinate of the element
       var pt = element.ownerSvgElement.createSvgPoint();
@@ -122,15 +120,27 @@ class MultiSelector extends Widget {
     }
   }
 
-  void endDrag(MouseEvent e) {
+  void _endDrag(MouseEvent e) {
     if (_enabled) {
       scale(_lastDelta.x, _lastDelta.y);
       updateCoordinates();
 
-      onSelectBox.add(new SelectBoxEvent(includedWidgets()));
+      onSelectBox.add(new SelectBoxEvent(_includedWidgets()));
       hide();
       _dragged = false;
     }
+  }
+
+  List<Widget> _includedWidgets() {
+    var result = _watchedWidgets.where((w) => w.draggable && SvgUtils.intersectElements(element, w.element));
+    if (width == 1 && height == 1) {
+      if (result.isNotEmpty) {
+        return [result.reduce((w1, w2) => w1.order > w2.order ? w1 : w2)];
+      } else {
+        return [];
+      }
+    }
+    return result.toList();
   }
 
   double get x => double.parse(element.attributes["x"]);
@@ -152,26 +162,5 @@ class MultiSelector extends Widget {
   set width(double width) => element.attributes["width"] = "$width";
 
   set height(double height) => element.attributes["height"] = "$height";
-
-  List<Widget> includedWidgets() {
-    if (width == 1 && height == 1) {
-      var result = _watchedWidgets.where((w) => SvgUtils.intersectElements(element, w.element));
-      if (result.isNotEmpty) {
-        return [result.reduce((w1, w2) => w1.order > w2.order ? w1 : w2)];
-      } else {
-        return [];
-      }
-    }
-    return _watchedWidgets.where((w) => SvgUtils.includeElement(element, w.element)).toList();
-  }
-
-}
-
-class SelectBoxEvent extends BoxyEvent {
-
-  List<Widget> selectedWidgets;
-
-  SelectBoxEvent(this.selectedWidgets) : super('selectbox') {
-  }
 
 }

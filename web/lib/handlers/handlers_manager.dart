@@ -8,54 +8,56 @@ class HandlersManager {
 
   final List<Widget> _handledWidgets = [];
 
-  final MultiSelector _multiSelector = new MultiSelector();
+  final WidgetSelector _widgetSelector = new WidgetSelector();
 
   HandlersManager(this._BOXY) {
-    // Selector group ID
+    // Handler group ID
     _BOXY._HANDLERS_GROUP.attributes['id'] = "handlers-group";
-    // Add Multiselector
-    _multiSelector.attachMultiselector(_BOXY._HANDLERS_GROUP, _watchedWidgets);
-    _multiSelector.onSelectBox.listen((e) => handleWidgets(e.selectedWidgets));
+
+    // Add Widget Selector
+    _widgetSelector.attachSelector(_BOXY._HANDLERS_GROUP, _watchedWidgets);
+    _widgetSelector.onSelectBox.listen((e) => showWidgetsHandlers(e.selectedWidgets));
+
+    // Change user mode handler
+    _BOXY.onChangeUserMode.listen((e) => e.mode != UserMode.HANDLE_MODE ? _widgetSelector.disabled() : _widgetSelector.enable());
   }
 
   void registerWidget(Widget widget) {
     _watchedWidgets.add(widget);
 
-    widget.onTranslate.listen((e) => _multiSelector.disabled());
-    widget.onResize.listen((e) => _multiSelector.disabled());
-    widget.onUpdate.listen((e) => _multiSelector.enable());
+    widget.onTranslate.listen((e) => _widgetSelector.disabled());
+    widget.onResize.listen((e) => _widgetSelector.disabled());
+    widget.onUpdate.listen((e) => _widgetSelector.enable());
+
+    widget.widgetHandlers.attach(_BOXY._HANDLERS_GROUP);
   }
 
-  void handleWidgets(List<Widget> widgets) {
-    _unhandleWidgets();
+  void showWidgetsHandlers(List<Widget> widgets) {
 
-    if (widgets.length > 1) {
-      _multiSelector.displayHandler(widgets, _BOXY._HANDLERS_GROUP);
-    } else {
-      widgets.forEach((w) => _onHandleWidget(w));
-    }
-  }
+    _widgetSelector.hideMoveHandler();
 
-  void _unhandleWidgets() {
-    _multiSelector.hideHandler();
-
+    // Hide previous displayed handlers
     if (_handledWidgets.isNotEmpty) {
       _handledWidgets.forEach((w) {
-        w.toggleHandlers(_BOXY._HANDLERS_GROUP);
-
+        w.widgetHandlers.disable();
         w.onUnselect.add(new UnselectWidgetEvent(w));
       });
       _handledWidgets.clear();
     }
-  }
 
-  void _onHandleWidget(Widget widget) {
-    if (_BOXY.userMode == UserMode.HANDLE_MODE && _watchedWidgets.contains(widget)) {
-      widget.toggleHandlers(_BOXY._HANDLERS_GROUP);
-      _handledWidgets.add(widget);
+    if (widgets.isNotEmpty) {
+      _widgetSelector.showMoveHandler(widgets, _BOXY._HANDLERS_GROUP);
 
-      widget.onSelect.add(new SelectWidgetEvent(widget));
+      widgets.forEach((w) {
+          if (widgets.length == 1) {
+            w.widgetHandlers.enable();
+          }
+          _handledWidgets.add(w);
+          w.onSelect.add(new SelectWidgetEvent(w));
+      });
     }
+
   }
+
 
 }

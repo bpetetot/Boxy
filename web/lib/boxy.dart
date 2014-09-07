@@ -20,7 +20,7 @@ part 'handlers/handler.dart';
 part 'handlers/handler_resize.dart';
 part 'handlers/handler_rotate.dart';
 part 'connectors/grip_connector.dart';
-part 'handlers/multi_selector.dart';
+part 'handlers/widget_selector.dart';
 part 'handlers/handler_move.dart';
 
 part './connectors/connector_manager.dart';
