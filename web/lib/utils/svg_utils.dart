@@ -82,21 +82,26 @@ class SvgUtils {
     svg.Rect r = null;
 
     for (svg.SvgElement e in elements) {
-      svg.Rect ebb = getBBox(e);
+      svg.Rect ebb = SvgUtils.getBBox(e);
       if (r == null) {
         r = ebb;
-      }
-      if (ebb.x < r.x) {
-        r.x = ebb.x;
-      }
-      if (ebb.y < r.y) {
-        r.y = ebb.y;
-      }
-      if (ebb.x + ebb.width > r.x + r.width) {
-        r.width = ebb.x + ebb.width - r.x;
-      }
-      if (ebb.y + ebb.height > r.y + r.height) {
-        r.height = ebb.y + ebb.height - r.y;
+      } else {
+        if (ebb.x + ebb.width <= r.x + r.width) {
+          r.width = r.x + r.width - ebb.x;
+        } else {
+          r.width = ebb.x + ebb.width - r.x;
+        }
+        if (ebb.y + ebb.height <= r.y + r.height) {
+          r.height = r.y + r.height - ebb.y;
+        } else {
+          r.height = ebb.y + ebb.height - r.y;
+        }
+        if (ebb.x < r.x) {
+          r.x = ebb.x;
+        }
+        if (ebb.y < r.y) {
+          r.y = ebb.y;
+        }
       }
     }
 

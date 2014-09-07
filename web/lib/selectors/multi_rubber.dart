@@ -3,7 +3,7 @@ part of boxy;
 class MultiRubber extends SelectorItem {
 
   static final double _LINE_WIDTH = 1.5;
-  static final String _COLOR = "green";
+  static final String _COLOR = "blue";
   static final String _CURSOR = "move";
 
   MultiRubber(String selectorName, List<Widget> selectedWidgets) : super(selectedWidgets) {
