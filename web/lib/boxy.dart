@@ -15,14 +15,13 @@ part './utils/path_transform.dart';
 
 part './events/events_stream.dart';
 
-part './selectors/selector_manager.dart';
-part './selectors/selector.dart';
-part './selectors/grip_rubber.dart';
-part './selectors/grip_resize.dart';
-part './selectors/grip_rotate.dart';
-part './selectors/grip_connector.dart';
-part './selectors/multi_selector.dart';
-part './selectors/multi_rubber.dart';
+part 'handlers/handlers_manager.dart';
+part 'handlers/handler.dart';
+part 'handlers/handler_resize.dart';
+part 'handlers/handler_rotate.dart';
+part 'connectors/grip_connector.dart';
+part 'handlers/multi_selector.dart';
+part 'handlers/handler_move.dart';
 
 part './connectors/connector_manager.dart';
 part './connectors/connector_path.dart';

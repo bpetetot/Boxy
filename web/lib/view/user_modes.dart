@@ -8,6 +8,6 @@ class UserMode {
   
   String toString() => _value;
   
-  static const SELECT_MODE = const UserMode._internal('SELECT_MODE');
+  static const HANDLE_MODE = const UserMode._internal('SELECT_MODE');
   static const CONNECT_MODE = const UserMode._internal('CONNECT_MODE');
 }

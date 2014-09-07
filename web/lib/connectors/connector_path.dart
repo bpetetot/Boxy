@@ -30,7 +30,7 @@ class ConnectorPath extends Widget {
     subscribedEvents.add(this.startWidget.onResize.listen((e) => onResizeMoveStartConnector(e.dx, e.dy)));
     subscribedEvents.add(this.startWidget.onUpdate.listen((e) => updateCoordinates()));
 
-    this.dragable = true;
+    this.addMoveHandler();
 
   }
 

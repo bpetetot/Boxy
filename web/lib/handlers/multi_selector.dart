@@ -11,6 +11,8 @@ class MultiSelector extends Widget {
 
   List<Widget> _watchedWidgets;
 
+  MoveHandler _multiMoveHandler;
+
   bool _enabled = true;
 
   MultiSelector() {
@@ -33,6 +35,20 @@ class MultiSelector extends Widget {
   bool _dragged = false;
   var _lastMouse;
   var _lastDelta;
+
+  // ---- Multi move handler
+  void displayHandler(List<Widget> widgets, svg.GElement view) {
+    _multiMoveHandler = new MoveHandler.forWidgets("multi-rubber", widgets);
+    _multiMoveHandler.attach(view, 0);
+  }
+
+  void hideHandler() {
+    if (_multiMoveHandler != null) {
+      _multiMoveHandler.dettach();
+      _multiMoveHandler = null;
+    }
+  }
+
 
   // ---- Override widget methods
 
@@ -58,13 +74,14 @@ class MultiSelector extends Widget {
   // ---- Show / Hide
   void show() {
     super.show();
-    // Add listeners used to drag
+
     subscribedEvents.add(element.ownerSvgElement.ownerSvgElement.onMouseMove.listen((event) => drag(event)));
     subscribedEvents.add(element.ownerSvgElement.ownerSvgElement.onMouseUp.listen((event) => endDrag(event)));
   }
 
   void hide() {
     super.hide();
+
     subscribedEvents.forEach((e) => e.cancel());
   }
 
@@ -109,7 +126,7 @@ class MultiSelector extends Widget {
     if (_enabled) {
       scale(_lastDelta.x, _lastDelta.y);
       updateCoordinates();
-      
+
       onSelectBox.add(new SelectBoxEvent(includedWidgets()));
       hide();
       _dragged = false;

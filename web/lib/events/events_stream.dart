@@ -5,20 +5,20 @@ class EventBoxyStreamProvider<T extends BoxyEvent> {
 
   final String _eventType;
 
-  final Map<Widget, EventBoxyStream> _streams = {}; 
-  
-  const EventBoxyStreamProvider(this._eventType);
+  final Map<Widget, EventBoxyStream> _streams = {};
+
+  EventBoxyStreamProvider(this._eventType);
 
   EventBoxyStream<T> forWidget(Widget w) {
-    return _streams.putIfAbsent(w, () => new EventBoxyStream(_eventType, w, onCancel : _onCancel(w)));     
+    return _streams.putIfAbsent(w, () => new EventBoxyStream(_eventType, w, onCancel: _onCancel(w)));
   }
-  
+
   _onCancel(Widget w) {
     if (_streams.containsKey(w)) {
       _streams.remove(w);
     }
   }
-  
+
 }
 
 abstract class BoxyStream<T extends BoxyEvent> implements Stream<T> {
@@ -34,11 +34,11 @@ class EventBoxyStream<T extends BoxyEvent> extends Stream<T> implements BoxyStre
   StreamController<T> _streamController;
 
   String _type;
-  
+
   Widget _widget;
 
-  EventBoxyStream(this._type, this._widget, { onCancel}) {
-    _streamController = new StreamController.broadcast(onCancel : onCancel, sync: true);
+  EventBoxyStream(this._type, this._widget, {onCancel}) {
+    _streamController = new StreamController.broadcast(onCancel: onCancel, sync: true);
   }
 
   // Delegate all regular Stream behavior to our wrapped Stream.
@@ -59,7 +59,7 @@ class TranslateEvent extends BoxyEvent {
 
   num dx, dy;
 
-  TranslateEvent (num dx, num dy) : super('translate') {
+  TranslateEvent(num dx, num dy) : super('translate') {
     this.dx = dx;
     this.dy = dy;
   }
@@ -70,7 +70,7 @@ class ResizeEvent extends BoxyEvent {
 
   num dx, dy;
 
-  ResizeEvent (num dx, num dy) : super('resize') {
+  ResizeEvent(num dx, num dy) : super('resize') {
     this.dx = dx;
     this.dy = dy;
   }
@@ -81,7 +81,7 @@ class SelectWidgetEvent extends BoxyEvent {
 
   Widget w;
 
-  SelectWidgetEvent (Widget w) : super('select') {
+  SelectWidgetEvent(Widget w) : super('select') {
     this.w = w;
   }
 
@@ -91,7 +91,7 @@ class UnselectWidgetEvent extends BoxyEvent {
 
   Widget w;
 
-  UnselectWidgetEvent (Widget w) : super('unselect') {
+  UnselectWidgetEvent(Widget w) : super('unselect') {
     this.w = w;
   }
 
@@ -99,15 +99,15 @@ class UnselectWidgetEvent extends BoxyEvent {
 
 class UpdateEvent extends BoxyEvent {
 
-  UpdateEvent () : super('update') {
+  UpdateEvent() : super('update') {
   }
 
 }
 
 abstract class BoxyEvent {
-  
+
   String type;
-  
+
   BoxyEvent(this.type);
 
 }

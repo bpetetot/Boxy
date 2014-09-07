@@ -1,19 +1,26 @@
 part of boxy;
 
-class MultiRubber extends SelectorItem {
+class MoveHandler extends WidgetHandler {
 
   static final double _LINE_WIDTH = 1.5;
   static final String _COLOR = "blue";
   static final String _CURSOR = "move";
 
-  MultiRubber(String selectorName, List<Widget> selectedWidgets) : super(selectedWidgets) {
+  MoveHandler.forWidget(String handlerName, Widget widget) : super.forWidget(widget) {
+    this.createMoveHandler(handlerName);
+  }
 
-    this.selectorName = selectorName;
+  MoveHandler.forWidgets(String handlerName, List<Widget> widgets) : super.forWidgets(widgets) {
+    this.createMoveHandler(handlerName);
+  }
+
+  void createMoveHandler(String handlerName) {
+    this.handlerName = handlerName;
 
     element = new svg.RectElement();
 
     element.attributes = {
-      "id": selectorName,
+      "id": handlerName,
       "stroke": _COLOR,
       "stroke-width": "${_LINE_WIDTH}",
       "stroke-dasharray": "10 5",
@@ -22,20 +29,23 @@ class MultiRubber extends SelectorItem {
       "vector-effect": "non-scaling-stroke",
       "shape-rendering": "auto"
     };
-
-    updateCoordinates();
   }
 
   void attach(svg.SvgElement parent, int order) {
     super.attach(parent, 0);
-    widgets.forEach((w) => w.onTranslate.listen((e) => translate(e.dx, e.dy)));
+
+    updateCoordinates();
+
+    widgets.forEach((w) => subscribedEvents.add(w.onTranslate.listen((e) => translate(e.dx, e.dy))));
+    widgets.forEach((w) => subscribedEvents.add(w.onResize.listen((e) => scale(e.dx, e.dy))));
+    widgets.forEach((w) => subscribedEvents.add(w.onUpdate.listen((e) => updateCoordinates())));
   }
 
-  void onDrag(SelectorDragEvent e) {
+  void onDrag(HandlerDragEvent e) {
     widgets.forEach((w) => w.translate(e.dx, e.dy));
   }
 
-  void onDragEnd(SelectorDragEvent e) {
+  void onDragEnd(HandlerDragEvent e) {
     widgets.forEach((w) => w.updateCoordinates());
     updateCoordinates();
   }
@@ -43,13 +53,15 @@ class MultiRubber extends SelectorItem {
   void updateCoordinates() {
 
     svg.Rect widgetBBox = SvgUtils.getBBoxElements(widgets.map((w) => w.element).toList());
+
     x = widgetBBox.x - 3;
     y = widgetBBox.y - 3;
     width = widgetBBox.width + 6;
     height = widgetBBox.height + 6;
 
-    onUpdate.add(new UpdateEvent());
     element.attributes["transform"] = "";
+
+    super.updateCoordinates();
   }
 
   double get x => double.parse(element.attributes["x"]);

@@ -10,7 +10,7 @@ class BoxyView {
 
   final svg.GElement _LAYERS_GROUP = new svg.GElement();
 
-  final svg.GElement _SELECTORS_GROUP = new svg.GElement();
+  final svg.GElement _HANDLERS_GROUP = new svg.GElement();
   
   final svg.GElement _CONNECTOR_GROUP = new svg.GElement();
   
@@ -19,11 +19,11 @@ class BoxyView {
   DevLogger logger;
 
   // Managers
-  SelectorManager _selectorManager;
+  HandlersManager _selectorManager;
   ConnectorManager _connectorManager;
   
   // User Mode (select mode, connection mode)
-  UserMode userMode = UserMode.SELECT_MODE;
+  UserMode userMode = UserMode.HANDLE_MODE;
   
   
   int nbLayers = 0;
@@ -50,8 +50,8 @@ class BoxyView {
     // Add layers and selector groups to the content view
     _LAYERS_GROUP.attributes['id'] = "layers";
     _SVG_CONTENT.append(_LAYERS_GROUP);
-    _SELECTORS_GROUP.attributes['id'] = "selectors-group";
-    _SVG_CONTENT.append(_SELECTORS_GROUP);
+    _HANDLERS_GROUP.attributes['id'] = "selectors-group";
+    _SVG_CONTENT.append(_HANDLERS_GROUP);
     _SVG_CONTENT.append(_CONNECTOR_GROUP);
 
     // Create the default layer
@@ -62,7 +62,7 @@ class BoxyView {
     _SVG_ROOT.append(_SVG_CONTENT);
 
     // Create the Selection Manager
-    _selectorManager = new SelectorManager(this);
+    _selectorManager = new HandlersManager(this);
 
     // Create the Connector Manager
     _connectorManager = new ConnectorManager(this);

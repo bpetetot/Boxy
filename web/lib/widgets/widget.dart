@@ -4,13 +4,11 @@ abstract class Widget {
 
   svg.SvgElement element;
 
-  bool resizable = false;
-
-  bool dragable = false;
-
   bool connectable = false;
-  
+
   int order = 0;
+
+  // ---- Graphics methods
 
   double get x;
 
@@ -51,9 +49,28 @@ abstract class Widget {
     subscribedEvents.forEach((e) => e.cancel());
   }
 
+  // ---- Widget handler
+
+  final WidgetHandlers _handlers = new WidgetHandlers();
+
+  WidgetHandlers get widgetHandlers => _handlers;
+
+  void addMoveHandler() {
+    _handlers.addHandler(new MoveHandler.forWidget('rubber-selector', this));
+  }
+
+  void addResizeHandler() {
+    _handlers.addHandler(new ResizeHandler('resize-grip', this));
+  }
+
+  void toggleHandlers(svg.SvgElement handlersView) {
+    _handlers.attach(handlersView);
+  }
+
   // ---- Widget listeners
+
   List subscribedEvents = [];
-  
+
   static final EventBoxyStreamProvider<TranslateEvent> translateEvent = new EventBoxyStreamProvider<TranslateEvent>('translate');
   static final EventBoxyStreamProvider<ResizeEvent> resizeEvent = new EventBoxyStreamProvider<ResizeEvent>('resize');
   static final EventBoxyStreamProvider<UpdateEvent> updateEvent = new EventBoxyStreamProvider<UpdateEvent>('update');
@@ -65,12 +82,13 @@ abstract class Widget {
   EventBoxyStream<UpdateEvent> get onUpdate => updateEvent.forWidget(this);
   EventBoxyStream<SelectWidgetEvent> get onSelect => selectEvent.forWidget(this);
   EventBoxyStream<UnselectWidgetEvent> get onUnselect => unselectEvent.forWidget(this);
-  
+
   // ---- Widget display
+
   void hide() {
     element.attributes["display"] = "none";
   }
-  
+
   void show() {
     element.attributes["display"] = "visible";
   }
@@ -78,14 +96,12 @@ abstract class Widget {
   // ---- Widget transforms
 
   void translate(num dx, num dy) {
-    // translate the widget
     element.attributes["transform"] = "translate(${dx}, ${dy})";
-    // notify listeners
+
     onTranslate.add(new TranslateEvent(dx, dy));
   }
 
   void scale(num dx, num dy) {
-    // scale the widget
     num ratioX = (width + dx) / width;
     num ratioY = (height + dy) / height;
 
@@ -97,22 +113,17 @@ abstract class Widget {
 
     element.attributes["transform"] = "translate(${translateX},${translateY}) scale(${ratioX}, ${ratioY})";
 
-    // notify listeners
     onResize.add(new ResizeEvent(dx, dy));
-
   }
 
   void rotate(num angle) {
-
     num cx = x + (width / 2);
     num cy = y + (height / 2);
 
     element.attributes["transform"] = "rotate(${angle}, ${cx}, ${cy})";
-
   }
 
   void updateCoordinates() {
-
     var position = SvgUtils.coordinateTransform(x, y, element);
     var position2 = SvgUtils.coordinateTransform(x + width, y + height, element);
 
@@ -121,12 +132,12 @@ abstract class Widget {
     x = position.x;
     y = position.y;
 
-    // notify listeners
+    element.attributes["transform"] = "";
+
     onUpdate.add(new UpdateEvent());
 
-    element.attributes["transform"] = "";
   }
-  
+
   String toString() {
     return "($x, $y) $width $height";
   }

@@ -78,6 +78,20 @@ class SvgUtils {
     return r;
   }
 
+  static svg.Rect getTransformedBBox(svg.SvgElement element) {
+      Rectangle rect = element.getBoundingClientRect();
+      svg.Point topLeft = SvgUtils.coordinateTransform(rect.left, rect.top, element);
+      svg.Point bottomRight = SvgUtils.coordinateTransform(rect.right, rect.bottom, element);
+
+      svg.Rect r = element.ownerSvgElement.createSvgRect();
+      r.x = topLeft.x;
+      r.y = topLeft.y;
+      r.width = bottomRight.x - topLeft.x;
+      r.height = bottomRight.y - topLeft.y;
+
+      return r;
+    }
+
   static svg.Rect getBBoxElements(List<svg.SvgElement> elements) {
     svg.Rect r = null;
 
@@ -107,5 +121,35 @@ class SvgUtils {
 
     return r;
   }
+
+  static svg.Rect getTransformedBBoxElements(List<svg.SvgElement> elements) {
+      svg.Rect r = null;
+
+      for (svg.SvgElement e in elements) {
+        svg.Rect ebb = SvgUtils.getTransformedBBox(e);
+        if (r == null) {
+          r = ebb;
+        } else {
+          if (ebb.x + ebb.width <= r.x + r.width) {
+            r.width = r.x + r.width - ebb.x;
+          } else {
+            r.width = ebb.x + ebb.width - r.x;
+          }
+          if (ebb.y + ebb.height <= r.y + r.height) {
+            r.height = r.y + r.height - ebb.y;
+          } else {
+            r.height = ebb.y + ebb.height - r.y;
+          }
+          if (ebb.x < r.x) {
+            r.x = ebb.x;
+          }
+          if (ebb.y < r.y) {
+            r.y = ebb.y;
+          }
+        }
+      }
+
+      return r;
+    }
 
 }

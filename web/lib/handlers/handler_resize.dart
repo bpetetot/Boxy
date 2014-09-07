@@ -1,15 +1,15 @@
 part of boxy;
 
-class GripResize extends SelectorItem {
+class ResizeHandler extends WidgetHandler {
 
   static final double _SIZE = 10.0;
   static final double _LINE_WIDTH = 1.0;
   static final String _COLOR = "red";
   static final String _CURSOR = "nwse-resize";
 
-  GripResize(String selectorName, Widget selectedWidget) : super([selectedWidget]) {
+  ResizeHandler(String selectorName, Widget selectedWidget) : super.forWidget(selectedWidget) {
 
-    this.selectorName = selectorName;
+    this.handlerName = selectorName;
 
     element = new svg.CircleElement();
 
@@ -22,14 +22,14 @@ class GripResize extends SelectorItem {
       "fill": "red"
     };
 
-    svg.Rect widgetBBox = SvgUtils.getBBox(widget.element);
-    this.x = widgetBBox.x + widgetBBox.width + 3;
-    this.y = widgetBBox.y + widgetBBox.height + 3;
-
   }
 
   void attach(svg.SvgElement parent, int order) {
     super.attach(parent, 0);
+
+    svg.Rect widgetBBox = SvgUtils.getBBox(widget.element);
+    this.x = widgetBBox.x + widgetBBox.width + 3;
+    this.y = widgetBBox.y + widgetBBox.height + 3;
 
     // Subscribe to selected widgets events
     subscribedEvents.add(widget.onResize.listen((e) => translate(e.dx, e.dy)));
@@ -41,7 +41,7 @@ class GripResize extends SelectorItem {
   num lastDx = 0;
   num lastDy = 0;
 
-  void onDrag(SelectorDragEvent e) {
+  void onDrag(HandlerDragEvent e) {
 
     // Manage grip moving when it's out of widget top and left border
     var topLeftPt = SvgUtils.coordinateTransform(widget.x, widget.y, widget.element);
@@ -70,7 +70,7 @@ class GripResize extends SelectorItem {
 
   }
 
-  void onDragEnd(SelectorDragEvent e) {
+  void onDragEnd(HandlerDragEvent e) {
     widget.updateCoordinates();
   }
 

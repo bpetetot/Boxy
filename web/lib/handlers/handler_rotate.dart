@@ -1,14 +1,14 @@
 part of boxy;
 
-class GripRotate extends SelectorItem {
+class RotateHandler extends WidgetHandler {
 
   static final double _SIZE = 10.0;
   static final double _LINE_WIDTH = 0.2;
   static final String _COLOR = "green";
 
-  GripRotate(String selectorName, List<Widget> selectedWidgets) : super(selectedWidgets) {
+  RotateHandler(String selectorName, List<Widget> widgets) : super.forWidgets(widgets) {
 
-    this.selectorName = selectorName;
+    this.handlerName = selectorName;
 
     element = new svg.CircleElement();
 
@@ -20,13 +20,13 @@ class GripRotate extends SelectorItem {
       "fill": "transparent"
     };
 
-    this.x = widget.x + (widget.width / 2);
-    this.y = widget.y - 20;
-
   }
 
   void attach(svg.SvgElement parent, int order) {
     super.attach(parent, 0);
+
+    this.x = widget.x + (widget.width / 2);
+    this.y = widget.y - 20;
 
     // Subscribe to selected widgets events
     subscribedEvents.add(widget.onResize.listen((e) => scale(e.dx, e.dy)));
@@ -35,7 +35,7 @@ class GripRotate extends SelectorItem {
 
   }
 
-  void onDrag(SelectorDragEvent e) {
+  void onDrag(HandlerDragEvent e) {
     // compute degree
     num circleRay;
     if (widget.width > widget.height) {
@@ -61,7 +61,7 @@ class GripRotate extends SelectorItem {
     //selector.selectedWidget.rotate(rotationAngle);
   }
 
-  void onDragEnd(SelectorDragEvent e) {
+  void onDragEnd(HandlerDragEvent e) {
     //selector.updateSelectorsCoordinates();
     //selector.selectedWidget.updateCoordinates();
     //element.attributes["transform"] = "";
