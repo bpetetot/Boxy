@@ -17,13 +17,13 @@ class EllipseBoxy extends Widget {
   }
 
   double get rx => double.parse(element.attributes["rx"]);
-  
+
   double get ry => double.parse(element.attributes["ry"]);
 
   double get x => cx - rx;
 
   double get y => cy - ry;
-  
+
   double get cx => double.parse(element.attributes["cx"]);
 
   double get cy => double.parse(element.attributes["cy"]);
@@ -31,9 +31,9 @@ class EllipseBoxy extends Widget {
   double get width => rx * 2;
 
   double get height => ry * 2;
-  
+
   set rx(double rx) => element.attributes["rx"] = "${rx}";
-  
+
   set ry(double ry) => element.attributes["ry"] = "${ry}";
 
   set x(double x) => element.attributes["cx"] = "${x + rx}";

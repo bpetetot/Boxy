@@ -13,17 +13,17 @@ class RectangleBoxy extends Widget {
       "stroke": "black",
       "fill": "white",
       "stroke-width": "1",
-      "vector-effect" : "non-scaling-stroke"
+      "vector-effect": "non-scaling-stroke"
     };
 
   }
 
   double get x => double.parse(element.attributes["x"]);
-  
+
   double get cx => x + (width / 2);
 
   double get y => double.parse(element.attributes["y"]);
-  
+
   double get cy => y + (height / 2);
 
   double get width => double.parse(element.attributes["width"]);

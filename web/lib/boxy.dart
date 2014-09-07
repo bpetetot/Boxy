@@ -27,7 +27,9 @@ part 'connectors/connector_path.dart';
 part 'connectors/grip_connector.dart';
 
 part 'widgets/widget.dart';
+part 'widgets/line.dart';
 part 'widgets/rectangle.dart';
 part 'widgets/ellipse.dart';
 part 'widgets/path.dart';
+part 'widgets/text.dart';
 part 'widgets/composed_widget.dart';
