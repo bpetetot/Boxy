@@ -43,7 +43,7 @@ void addEllipse(BoxyView boxy) {
 
 void addShape(BoxyView boxy) {
 
-  SvgShape widget = new SvgShape("actor", 100.0, 100.0, 40.0, 40.0);
+  PathBoxy widget = new PathBoxy("actor", 100.0, 100.0, 40.0, 40.0);
   widget.addResizeHandler();
   widget.connectable = true;
   boxy.addWidget(widget);

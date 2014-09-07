@@ -18,13 +18,9 @@ class WidgetSelector extends Widget {
   WidgetSelector() {
     element = new svg.RectElement();
     element.attributes = {
-      "x": "0",
-      "y": "0",
-      "width": "1",
-      "height": "1",
       "cursor": _CURSOR,
       "stroke": _COLOR,
-      "stroke-width": "${_LINE_WIDTH}",
+      "stroke-width": "$_LINE_WIDTH",
       "fill": "transparent",
       "stroke-dasharray": "10 5",
       "vector-effect": "non-scaling-stroke",
@@ -66,8 +62,8 @@ class WidgetSelector extends Widget {
   }
 
   void disabled() {
-    hide();
     _enabled = false;
+    hide();
   }
 
 

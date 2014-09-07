@@ -79,33 +79,25 @@ class SvgUtils {
   }
 
   static svg.Rect getBBoxElements(List<svg.SvgElement> elements) {
-    svg.Rect r = null;
 
-    for (svg.SvgElement e in elements) {
-      svg.Rect ebb = SvgUtils.getBBox(e);
-      if (r == null) {
-        r = ebb;
-      } else {
-        if (ebb.x + ebb.width <= r.x + r.width) {
-          r.width = r.x + r.width - ebb.x;
-        } else {
-          r.width = ebb.x + ebb.width - r.x;
-        }
-        if (ebb.y + ebb.height <= r.y + r.height) {
-          r.height = r.y + r.height - ebb.y;
-        } else {
-          r.height = ebb.y + ebb.height - r.y;
-        }
-        if (ebb.x < r.x) {
-          r.x = ebb.x;
-        }
-        if (ebb.y < r.y) {
-          r.y = ebb.y;
-        }
-      }
-    }
+    // FIXME Use a bbox object to avoid SVG element dependency
+    svg.Rect r = elements.first.ownerSvgElement.createSvgRect();
 
-    return r;
+    return elements.map((e) => SvgUtils.getBBox(e)).reduce((bbox1, bbox2) {
+
+      num xmin = math.min(bbox1.x, bbox2.x);
+      num xmax = math.max(bbox1.x + bbox1.width, bbox2.x + bbox2.width);
+      num ymin = math.min(bbox1.y, bbox2.y);
+      num ymax = math.max(bbox1.y + bbox1.height, bbox2.y + bbox2.height);
+
+      r.x = xmin;
+      r.y = ymin;
+      r.width = xmax - xmin;
+      r.height = ymax - ymin;
+
+      return r;
+    });
+
   }
 
 }

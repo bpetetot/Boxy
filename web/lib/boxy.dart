@@ -30,4 +30,4 @@ part './widgets/widget.dart';
 part './widgets/rectangle.dart';
 part './widgets/ellipse.dart';
 
-part './shapes/shapes_svg.dart';
+part 'widgets/path.dart';
